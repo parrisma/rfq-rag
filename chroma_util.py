@@ -3,6 +3,7 @@ import numpy as np
 import json
 import uuid
 import requests
+import time
 from chromadb.config import Settings
 import chromadb
 
@@ -32,21 +33,35 @@ def chroma_bootstrap_and_deepclean(chroma_host: str,
             persistent_client.delete_collection(col)
 
     new_collection = False
-    if "last" == use_collection and len(collections) == 1:
-        collection_name = collections[0]
-        collection = persistent_client.get_collection(collection_name)
-        print(f"Chroma - Using last collection: {collection_name}")
-    elif use_collection in collections:
-        collection = persistent_client.get_or_create_collection(use_collection)
-        print(f"Chroma - Using existing collection: {collection_name}")
-    else:
-        new_collection = True
-        collection_name = f"rfq_rag_collection_{uuid.uuid4()}"
-        print(f"Chroma - creating new collection: {collection_name}")
+    try:
+        if "last" == use_collection:
+            sorted_cols = []
+            for col_name in collections:
+                col = persistent_client.get_collection(col_name)
+                sorted_cols.append([col, col.metadata.get("created_at", 0)])
+            sorted_cols = sorted(sorted_cols, key=lambda c: c[1])
+            collection = sorted_cols[-1][0]
+            print(f"Chroma - Using last collection: {collection.name}")
+        elif use_collection in collections:
+            collection_name = use_collection
+            collection = persistent_client.get_collection(collection_name)
+            print(f"Chroma - Using existing collection: {collection.name}")
+        else:
+            new_collection = True
+            collection_name = f"rfq_rag_collection_{uuid.uuid4()}"
+            collection = persistent_client.create_collection(collection_name, metadata={"created_at": time.time()})
+            print(f"Chroma - creating new collection: {collection.name}")
+    except Exception as e:
+        print(f"Chroma - Error creating or getting collections: {e}")
+        raise
 
     collections = persistent_client.list_collections()
-    for col in collections:
-        print(f"Chroma - New collection created: {col}")
+    if collection.name in collections:
+        print(f"Chroma - New collection created & visible in Chroma: {collection.name}")
+    else:
+        print(f"Chroma - Error creating new collection: {collection.name}")
+        collection = None
+        new_collection = False
 
     return (persistent_client, collection, new_collection)
 
@@ -66,19 +81,25 @@ def test_chroma_connection(host: str,
 
 
 def get_similar_rfqs(rfq_to_match: str,
+                     product_hint: str,
                      embedding_generator: Callable[[str], List[float]],
                      collection: chromadb.Collection,
                      num_similar: int = 5) -> List[List[str]]:
     search_embedding = embedding_generator(rfq_to_match)
-    similar_docs = collection.query(
-        query_embeddings=[search_embedding],
-        n_results=num_similar,
-        # where_document={"$contains": "ELN"},
-        include=["distances", "documents", "metadatas"])
+    if product_hint is not None and len(product_hint) > 0:
+        similar_docs = collection.query(
+            query_embeddings=[search_embedding],
+            n_results=num_similar,
+            where={"product": product_hint},
+            include=["distances", "documents", "metadatas"])
+    else:
+        similar_docs = collection.query(
+            query_embeddings=[search_embedding],
+            n_results=num_similar,
+            include=["distances", "documents", "metadatas"])
     sdst = np.array(similar_docs["distances"]).T
     sdoc = np.array(similar_docs["documents"]).T
     smet = np.array(similar_docs["metadatas"]).T
-    suid = (np.array([json.loads(itm[0]["meta"])["uuid"]
-            for itm in smet]).T).reshape(np.shape(smet)[0], 1)
-    res = np.hstack((sdst, sdoc, suid)).tolist()
+    suid = np.array([itm[0]["uuid"] for itm in smet]).reshape(np.shape(smet)[0], 1)
+    res = np.hstack((sdst, sdoc, smet, suid)).tolist()
     return res

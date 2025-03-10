@@ -1,4 +1,7 @@
-from typing import Tuple, Any
+import json
+import sys
+from time import sleep
+from typing import Tuple, Any, Dict
 import os
 import platform
 import argparse
@@ -47,8 +50,8 @@ def get_options(ollama_host: str,
         parser.add_argument("-u", "--username", type=str,
                             help="The username to use for the demo, default is the current user.")
     # Optional arguments
-    parser.add_argument("-om", "--ollama-model", type=str,
-                        default=ollama_model, help=f"Ollama LLM to use, defualt is {ollama_model}")
+    parser.add_argument("-om", "--ollama-model", type=str, default=ollama_model,
+                        help=f"Ollama LLM to use, defualt is {ollama_model}")
     parser.add_argument("-oh", "--ollama-host", type=str,
                         default=ollama_host, help=f"Ollama host & port URI to use, default is {ollama_host}")
     parser.add_argument("-ch", "--chroma_host", type=str,
@@ -56,13 +59,31 @@ def get_options(ollama_host: str,
     parser.add_argument("-cp", "--chroma_port", type=str,
                         default=chroma_port, help=f"Chroma port to use, default is {chroma_port}")
     parser.add_argument("-cs", "--clear-screen", type=bool,
-                        default=True, help="Clear terminal before running the demo, default is True.")
-    parser.add_argument("-cr", "--remove_collections", type=bool,
-                        default=True, help="Delete all Chroma collections before running the demo, default is True.")
-    parser.add_argument("-cu", "--use_collection", type=str,
-                        default="last", help="The name of an existing chroma collection to use, default is 'last'.")
+                        default=True, help="Clear terminal before running the demo")
+    parser.add_argument("-rc", "--remove_collections", action="store_true",
+                        help="Delete all Chroma collections before running the demo.")
+    parser.add_argument("-uc", "--use_collection", type=str,
+                        default=None, help="The name of an existing chroma collection to use, default is a new collection.")
+    parser.add_argument("-pt", "--product-type-test", action="store_true",
+                        help="Run product type test")
+    parser.add_argument("-st", "--similarity-test", action="store_true",
+                        help="Run similarity test by looking up similar RFQ in Vector DB (Chroma)")
+    parser.add_argument("-nr", "--num_rfq", type=int,
+                        default=25, help="The number of random RFQ's to generate for the simulation")
 
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args()
+    except SystemExit as e:
+        if e.code == 2:
+            print("Error: Invalid command-line arguments.")
+            parser.print_help()
+            sys.exit(1)
+        else:
+            raise
+
+    if args.use_collection is not None:
+        args.remove_collections = False
+
     return (args.username,
             args.ollama_model,
             args.ollama_host,
@@ -70,4 +91,27 @@ def get_options(ollama_host: str,
             args.chroma_port,
             args.clear_screen,
             args.remove_collections,
-            args.use_collection)
+            args.use_collection,
+            args.product_type_test,
+            args.similarity_test,
+            args.num_rfq)
+
+
+def flatten_dict(nested_dict: Dict,
+                 flat_dict: Dict = None,
+                 key: str = '') -> Dict:
+    if not isinstance(nested_dict, dict):
+        raise TypeError(f"input, nested dicts must be a dictionary but given : {type(nested_dict)}")
+
+    if flat_dict is None:
+        flat_dict = {}
+
+    for k, v in nested_dict.items():
+        new_key = f"{key}.{k}" if key else k
+
+        if isinstance(v, dict):
+            flatten_dict(v, flat_dict, new_key)
+        else:
+            flat_dict[new_key] = v
+
+    return flat_dict

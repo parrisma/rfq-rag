@@ -1,22 +1,22 @@
-from typing import List
+from typing import List, NamedTuple
 from langchain.prompts import PromptTemplate
+from collections import namedtuple
 
 taxonomy_prompt_template = """
-you are an expert sales trader on a structured equity derivatives desk.
-You are given a request for a quote given and you must determine the type of structured equity derivative product the request is for.
-your response can only be a product type in this comma separated list [{products}]
-if the product type is not obvious or you have to make assumptions the response will be the single word unknown.
-you will also assign a confidence level that you have the correct product.
-your overall response will be in the form of a json message of this format:
+Identify the structured equity derivative product type from the following RFQ, selecting from: [{products}].
+
+**RFQ:** {request}
+
+**Response (JSON):**
+
+```json
 [
     {{
-        "product": "product type here",
-        "confidence: " "between 0 and 100%",
-        "explanation": "explanation of given product type here"
+        "product": "product type or 'unknown'",
+        "confidence": "percentage (0-100)",
+        "explanation": "reasoning for product selection"
     }}
 ]
-The request for quote is as follows:
-{request}
 """
 
 taxonomy_prompt = PromptTemplate(
@@ -31,15 +31,109 @@ def get_taxonomy_prompt(product_list: List[str],
                                   request=rfq)
 
 
-parse_prompt_template = """
-You are a sales trader on a structured equity derivatives desk.
-Given the following examples of hand written structured equity derivatives RFQs,
-please parse the RFQs into structured data fields that can be used to generate a trade ticket.
-for each RFQ, please provide the following structured data fields:
-- Trade Type
-- Underlying
-- Option Type
-- Strike
-- Expiry
-- Quantity
+parse_prompt_autocall_template = """
+Parse the following structured equity derivatives autocall RFQ into JSON, extracting product-specific parameters with consistent units.
+
+**Examples:**
+
+* RFQ: [{example1_rfq}], Parameters: {example1_params}
+* RFQ: [{example2_rfq}], Parameters: {example2_params}
+* RFQ: [{example3_rfq}], Parameters: {example3_params}
+* RFQ: [{example4_rfq}], Parameters: {example4_params}
+* RFQ: [{example5_rfq}], Parameters: {example5_params}
+
+**Input RFQ:** [{request}]
+
+**Output JSON (include units):**
+
+```json
+[
+    {{
+        "product": "product type",
+        "underlying": "ticker",
+        "maturity": "value months",
+        "barrier": "value %",
+        "coupon": "frequency",
+        "coupon_rate": "value %",
+        "autocall_frequency": "frequency",
+        "autocall_barrier": "value %",
+        "notional": "value currency",
+        "from": "name",
+        "confidence": "percentage %",
+        "explanation": "parsing rationale and assumptions"
+    }}
+]
 """
+
+parse_prompt_eln_template = """
+Parse the following structured equity derivatives equity linked note (ELN) RFQ into JSON, extracting product-specific parameters with consistent units.
+
+**Examples:**
+
+* RFQ: [{example1_rfq}], Parameters: {example1_params}
+* RFQ: [{example2_rfq}], Parameters: {example2_params}
+* RFQ: [{example3_rfq}], Parameters: {example3_params}
+* RFQ: [{example4_rfq}], Parameters: {example4_params}
+* RFQ: [{example5_rfq}], Parameters: {example5_params}
+
+**Input RFQ:** [{request}]
+
+**Output JSON (include units):**
+
+```json
+[
+    {{
+        "underlying": "ticker",
+        "maturity": "value months",
+        "participation": "value %",
+        "barrier": value %",
+        "coupon": "value % ",
+        "coupon_type": "frequency",
+        "notional": "value currency",
+        "from": "name",
+        "confidence": "percentage %",
+        "explanation": "parsing rationale and assumptions"
+    }}
+"""
+
+
+class Example(NamedTuple):
+    rfq: str
+    params: str
+
+
+def get_parse_prompt(rfq: str,
+                     product: str,
+                     ex1: Example,
+                     ex2: Example,
+                     ex3: Example,
+                     ex4: Example,
+                     ex5: Example) -> str:
+    if product == "autocall":
+        res = parse_prompt_autocall_template.format(request=rfq,
+                                                    example1_rfq=ex1.rfq,
+                                                    example1_params=ex1.params,
+                                                    example2_rfq=ex2.rfq,
+                                                    example2_params=ex2.params,
+                                                    example3_rfq=ex3.rfq,
+                                                    example3_params=ex3.params,
+                                                    example4_rfq=ex4.rfq,
+                                                    example4_params=ex4.params,
+                                                    example5_rfq=ex5.rfq,
+                                                    example5_params=ex5.params)
+    elif product == "eln":
+        res = parse_prompt_eln_template.format(request=rfq,
+                                               example1_rfq=ex1.rfq,
+                                               example1_params=ex1.params,
+                                               example2_rfq=ex2.rfq,
+                                               example2_params=ex2.params,
+                                               example3_rfq=ex3.rfq,
+                                               example3_params=ex3.params,
+                                               example4_rfq=ex4.rfq,
+                                               example4_params=ex4.params,
+                                               example5_rfq=ex5.rfq,
+                                               example5_params=ex5.params)
+    else:
+        res = None
+
+    return res

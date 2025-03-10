@@ -1,12 +1,21 @@
-from typing import Tuple, List
+from typing import Tuple, List, Dict
+from enum import Enum
 import os
 import requests
 import json
 from ollama import embeddings
+from langchain_prompt import get_taxonomy_prompt, get_parse_prompt, Example
+from rfq_generator import products
 
+
+class OllamaModel(Enum):
+    LLAMA2_7B = "llama2:7b"
+    LLAMA3_3_LATEST = "llama3.3:latest"
+    QWEN2_5_72B = "qwen2.5:72b"
+
+
+ollama_model = OllamaModel.QWEN2_5_72B.value
 ollama_host = "http://localhost:11434"
-#ollama_model = "llama2:7b"
-ollama_model = "llama3.3:latest"
 
 # Create embedding and load files into Chroma
 #
@@ -54,6 +63,26 @@ def ollama_runing_and_model_loaded(host: str,
         return False
 
 
+def clean_json_str(jason_str: str) -> str:
+    jason_str = jason_str.replace('\n', '')
+    jason_str = jason_str.replace('\`', '')
+    jason_str = jason_str.replace('\'', '')
+
+    first_bracket_index = jason_str.find('[')
+    last_bracket_index = jason_str.rfind(']')
+
+    if first_bracket_index == -1 or last_bracket_index == -1:
+        return None  # No brackets found
+
+    if first_bracket_index == last_bracket_index:
+        return None  # only one bracket found
+
+    if first_bracket_index > last_bracket_index:
+        return None  # first bracket after last bracket
+
+    return jason_str[first_bracket_index+1:last_bracket_index]
+
+
 def get_ollama_response(prompt: str,
                         model: str,
                         host: str,
@@ -75,7 +104,8 @@ def get_ollama_response(prompt: str,
         response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
 
         data = response.json()
-        return (True, data['message']['content'])
+        json_str = clean_json_str(data['message']['content'])
+        return (True, json.loads(json_str))
 
     except requests.exceptions.RequestException as e:
         return f"Error: Failed to connect to Ollama: {e}"
@@ -85,3 +115,33 @@ def get_ollama_response(prompt: str,
         return "Error: Unexpected response format from Ollama."
     except Exception as e:
         return f"An unexpected error occurred: {e}"
+
+
+def get_product_taxonomy(ref_request: str,
+                         model: str,
+                         host: str
+                         ) -> Tuple[bool, Dict]:
+    """
+        Use currently loaded Ollama LLM to review the given RFQ and return what product type the RFQ is talking about
+    """
+    prompt = get_taxonomy_prompt(product_list=products, rfq=ref_request)
+    res, reply = get_ollama_response(prompt, model=model, host=host)
+    return res, reply
+
+
+def get_parsed_rfq(ref_request: str,
+                   product: str,
+                   ex1: Example,
+                   ex2: Example,
+                   ex3: Example,
+                   ex4: Example,
+                   ex5: Example,
+                   model: str,
+                   host: str
+                   ) -> Tuple[bool, Dict]:
+    """
+        Use currently loaded Ollama LLM to review the given RFQ and parse out all pricing parameters
+    """
+    prompt = get_parse_prompt(ref_request, product, ex1, ex2, ex3, ex4, ex5)
+    res, reply = get_ollama_response(prompt, model=model, host=host)
+    return res, reply

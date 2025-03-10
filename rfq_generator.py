@@ -2,10 +2,32 @@ import random
 import uuid
 import json
 
-products = ["eln","autocall"]
+products = ["eln", "autocall"]
 
-underlyings = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "JPM", "V", "UNH", "XOM",
-               "NESN.SW", "ROG.SW", "ASML.AS", "SIE.DE", "SAN.MC", "600519.SS", "TTE.PA", "BP.L", "RIO.L", "TM.T"]  # Global underlyings
+imaginary_stocks = {
+    "BQM.PA": "Bennett Quantum Mining",
+    "CIF.T": "Campbell Innovative Finance",
+    "FAF.MX": "Foster Advanced Finance",
+    "TPH.SW": "Turner Precision Health",
+    "CDM.HK": "Campbell Dynamic Mining",
+    "VSL.T": "Vance Select Leisure",
+    "KIF.L": "Kelly Innovative Finance",
+    "ODA.T": "Owens Dynamic Automotive",
+    "LZL.US": "Lambert Zenith Leisure",
+    "LVL.PA": "Lambert Vanguard Leisure",
+    "BSM.MX": "Bennett Synergy Mining",
+    "YSR.MX": "York Superior Robotics",
+    "IPR.MX": "Irwin Pinnacle Robotics",
+    "TER.L": "Turner Elite Robotics",
+    "EDA.US": "Edwards Dynamic Automotive",
+    "SIA.PA": "Shaw Innovative Automotive",
+    "RSH.T": "Reed Select Health",
+    "YSL.SA": "York Superior Leisure",
+    "GQM.T": "Gibson Quantum Mining",
+    "TGF.PA": "Turner Global Finance"
+}
+
+underlyings = [imgs[0] for imgs in imaginary_stocks.items()]
 
 colloquial_closings = [
     "Thx, appreciate it.",
@@ -51,11 +73,9 @@ nicknames = ["Al", "Benny", "Chuck", "Dave", "Eve",
 def generate_eln_rfq():
     """Generates a random ELN RFQ email as an f-string with typos, abbreviations, and more variety."""
 
-    underlyings = ["AAPL", "MSFT", "GOOG", "AMZN",
-                   "TSLA", "NVDA", "JPM", "V", "UNH", "XOM"]
+    # underlyings - global var
     maturities = ["6", "12", "18", "24"]
-    maturity_units = [("months", "mos"), ("months", "mnth"),
-                      ("year", "yr"), ("years", "yrs")]
+    maturity_units = [("months", "mos"), ("months", "mnth")]
     participations = ["70", "80", "90"]
     participation_units = [("percent", "%"), ("percent", "pct")]
     barriers = ["40", "50", "60"]
@@ -109,6 +129,7 @@ def generate_eln_rfq():
     coupon_full, coupon_abbr = random.choice(coupons)
     coupon_unit_full, coupon_unit_abbr = random.choice(coupon_units)
     coupon_type = random.choice(coupon_types)
+    notional = f"USD ${random.randint(1, 10) * 5000}"
     colloquial_request = random.choice(colloquial_requests)
     colloquial_closing = random.choice(colloquial_closings)
     first_name = random.choice(first_names)
@@ -122,6 +143,7 @@ def generate_eln_rfq():
         "barrier": f"{barrier_val} {random.choice([barrier_unit_full, barrier_unit_abbr])}",
         "coupon": f"{random.choice([coupon_full, coupon_abbr])} {random.choice([coupon_unit_full, coupon_unit_abbr])}",
         "coupon_type": coupon_type,
+        "notional": notional
     }
 
     param_keys = list(params.keys())
@@ -154,6 +176,7 @@ def generate_eln_rfq():
         "barrier": f"{barrier_val} {barrier_unit_full}",
         "coupon": f"{coupon_full} {coupon_unit_full}",
         "coupon_type": coupon_type,
+        "notional": notional,
         "from": f"{first_name} {family_name}"
     }
 
@@ -171,6 +194,7 @@ def generate_eln_rfq():
 def generate_autocall_rfq():
     """Generates a random autocall RFQ email as an f-string with typos, abbreviations, and more variety."""
 
+    # underlyings - global var
     maturities = ["1", "2", "3", "4", "5"]
     maturity_units = [("years", "yrs")]
     barriers = ["50", "60", "70"]
@@ -185,6 +209,7 @@ def generate_autocall_rfq():
     autocall_frequency_units = [("", "checks")]
     autocall_barriers = ["100", "102", "105"]
     autocall_barrier_units = [("percent", "%"), ("percent", "pct")]
+    notional = f"USD ${random.randint(1, 10) * 5000}"
 
     colloquial_requests = [
         "Hey, can u price ths autocall RFQ?",
@@ -259,6 +284,7 @@ def generate_autocall_rfq():
         "coupon_rate": f"{coupon_rate_val} {random.choice([coupon_rate_unit_full, coupon_rate_unit_abbr])}",
         "autocall_frequency": f"{random.choice([autocall_frequency_full, autocall_frequency_abbr])} {random.choice([autocall_frequency_unit_full, autocall_frequency_unit_abbr])}",
         "autocall_barrier": f"{autocall_barrier_val} {random.choice([autocall_barrier_unit_full, autocall_barrier_unit_abbr])}",
+        "notional": notional
     }
 
     param_keys = list(params.keys())
@@ -292,13 +318,14 @@ def generate_autocall_rfq():
         "coupon_rate": f"{coupon_rate_val} {coupon_rate_unit_full}",
         "autocall_frequency": f"{autocall_frequency_full} {autocall_frequency_unit_full}",
         "autocall_barrier": f"{autocall_barrier_val} {autocall_barrier_unit_full}",
+        "notional": notional,
         "from": f"{first_name} {family_name}"
     }
 
     request = f"{colloquial_request} {', '.join(param_strings)}. {random.choice(sign_offs)}"
 
     result = {
-        "product": "eln",
+        "product": "autocall",
         "uuid": str(uuid.uuid4()),
         "parameters": formal_params,
         "request": request
