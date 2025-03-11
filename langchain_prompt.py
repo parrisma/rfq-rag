@@ -6,6 +6,26 @@ from collections import namedtuple
 taxonomy_prompt_template = """
 Identify the structured equity derivative product type from the following RFQ, selecting from: [{products}].
 
+**Strict Clarification Policy:*
+
+* **Any ambiguity or potential for multiple interpretations MUST result in a request for clarification.**
+* **If there is ANY doubt about the meaning of a term or phrase, request clarification.**
+* **Assume the worst-case scenario regarding ambiguity and prioritize accuracy over speed.**
+
+**Instructions:**
+
+1.  Identify the product type based on the RFQ
+2.  Provide a confidence level for the identification
+3.  Determine the language of the RFQ is written in
+4.  **Explanation Section:**
+    * Explicitly state all assumptions made during parsing.
+    * If any term or phrase has the potential for multiple interpretations, clearly state the ambiguity and explain how it was resolved.
+    * Reduce the "confidence" value significantly if any assumptions or ambiguous terms were used.
+5.  **Advice Section:**
+    * **NEVER state "ok to quote" if there is ANY ambiguity.**
+    * **ALWAYS write a request for clarification, addressed to the requestor, stating precisely what needs clarification, if there is ANY doubt.**
+    * The request for clarification should be a complete sentence and directly address the requestor.
+
 **RFQ:** {request}
 
 **Response (JSON):**
@@ -14,8 +34,10 @@ Identify the structured equity derivative product type from the following RFQ, s
 [
     {{
         "product": "product type or 'unknown'",
-        "confidence": "percentage (0-100)",
+        "confidence": "percentage 0-100",
+        "language": "one of en, fr, es or unkonwn",
         "explanation": "reasoning for product selection"
+        "advice" : "either trust predicted product type or seek clarification from requestor"
     }}
 ]
 """
@@ -94,6 +116,7 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
         "autocall_barrier": "value %",
         "notional": "value currency",
         "from": "name",
+        "language": "one of en, fr, es or unkonwn",
         "confidence": "percentage %",
         "explanation": "parsing rationale and assumptions",
         "advice" : "either proceed with quote or seek clarification from requestor"

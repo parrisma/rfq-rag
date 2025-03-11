@@ -29,13 +29,6 @@ def get_username() -> str:
         return None
 
 
-ollama_host = ""
-# ollama_model = "llama2:7b"
-ollama_model = "llama3.3:latest"
-chroma_host = "localhost"
-chroma_port = 8000
-
-
 def get_options(ollama_host: str,
                 ollama_model: str,
                 chroma_host: str,
@@ -68,8 +61,14 @@ def get_options(ollama_host: str,
                         help="Run product type test")
     parser.add_argument("-st", "--similarity-test", action="store_true",
                         help="Run similarity test by looking up similar RFQ in Vector DB (Chroma)")
+    parser.add_argument("-ft", "--full-rfq-test", action="store_true",
+                        help="Run full RFQ test and compare LLM extracted results with test results")
     parser.add_argument("-nr", "--num_rfq", type=int,
                         default=25, help="The number of random RFQ's to generate for the simulation")
+    parser.add_argument("-kr", "--keep-rfq", action="store_true",
+                        help="Keep any collections created as part of the demo rather than deleting them at the end")
+    parser.add_argument("-nt", "--num_tests", type=int,
+                        default=5, help="The number test cycles to perform for rfq pasring")
 
     try:
         args = parser.parse_args()
@@ -94,7 +93,10 @@ def get_options(ollama_host: str,
             args.use_collection,
             args.product_type_test,
             args.similarity_test,
-            args.num_rfq)
+            args.full_rfq_test,
+            args.num_rfq,
+            args.keep_rfq,
+            args.num_tests)
 
 
 def flatten_dict(nested_dict: Dict,
