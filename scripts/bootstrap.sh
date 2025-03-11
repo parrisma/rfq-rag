@@ -12,7 +12,7 @@ ollama_container_name="ollama-gpu"
 ollama_data_volume="/home/$username/ollama_data"
 ollama_image="ollama/ollama"
 ollama_port="11434"
-ollama_model="llama2:7b"
+ollama_model="qwen2.5:72b"
 
 chroma_container_name="chromadb"
 chroma_data_volume="/home/$username/chroma_data"
