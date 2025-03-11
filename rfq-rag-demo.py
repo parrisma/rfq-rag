@@ -6,6 +6,7 @@ from chroma_util import test_chroma_connection, chroma_bootstrap_and_deepclean, 
 from ollama_util import ollama_runing_and_model_loaded, generate_ollama_embedding, get_product_taxonomy, get_parsed_rfq, ollama_host, ollama_model
 from rfq_generator import generate_random_rfq
 from langchain_prompt import Example
+from compare import compare_json_expected_actual
 
 _username, \
     _ollama_model, \
@@ -129,6 +130,7 @@ if _similarity_test:
                                 model=_ollama_model,
                                 host=_ollama_host)
     print(f"\nreply: {json.dumps(reply, indent=4)}")
+    compare_json_expected_actual(test_rfq['parameters'], reply)
 
 if new_collection:
     print("\n############ D E L E T E  C O L L E C T I O N #########")
