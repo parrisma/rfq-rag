@@ -35,7 +35,7 @@ chroma_status = test_chroma_connection(host=_chroma_host, port=_chroma_port)
 print(f"Chroma - running : {chroma_status}")
 
 if not ollama_status or not chroma_status:
-    print("Error - run ./scripts/start-ollama.sh to ensure all requried services are running as conatiners")
+    print("Error - run ./scripts/start-ollama.sh to ensure all required services are running as containers")
     exit()
 
 # Purge Chroma of any existing collections and create a dedicated collection just for this demo
@@ -46,8 +46,8 @@ persistent_client, collection, new_collection = chroma_bootstrap_and_deepclean(_
                                                                                _chroma_remove_all)
 
 # Generate a set of RFQ's that will act as the support example for the final RFQ parsing
-# In practice these would be real RFQ examples that had been hand seclected from production
-# and the prameters verified.
+# In practice these would be real RFQ examples that had been hand selected from production
+# and the parameters verified.
 #
 print("\n############ G E N E R A T E  T E S T  R F Q s #########\n")
 embedding_generator = partial(generate_ollama_embedding,
@@ -133,7 +133,7 @@ if _similarity_test or _full_rfq_test:
                                        reply['product'],
                                        embedding_generator,
                                        collection)
-            print(f"\nRfqRag - List of similar RFQ's with distances mesasure from the random RFQ")
+            print(f"\nRfqRag - List of similar RFQ's with distances measure from the random RFQ")
             for d, r, m, u in similar:
                 print(f"RfqRag - Dist: [{float(d):7.2f}], Doc: {r}")
         else:

@@ -1,4 +1,4 @@
-# RFQ Pasring with Retreival Augmented Generation
+# RFQ Parsing with Retrieval Augmented Generation
 
 ## Overview
 

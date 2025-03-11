@@ -23,8 +23,8 @@ Identify the structured equity derivative product type from the following RFQ, s
     * Reduce the "confidence" value significantly if any assumptions or ambiguous terms were used.
 5.  **Advice Section:**
     * **NEVER state "ok to quote" if there is ANY ambiguity.**
-    * **ALWAYS write a request for clarification, addressed to the requestor, stating precisely what needs clarification, if there is ANY doubt.**
-    * The request for clarification should be a complete sentence and directly address the requestor.
+    * **ALWAYS write a request for clarification, addressed to the requester, stating precisely what needs clarification, if there is ANY doubt.**
+    * The request for clarification should be a complete sentence and directly address the requester.
 
 **RFQ:** {request}
 
@@ -35,9 +35,9 @@ Identify the structured equity derivative product type from the following RFQ, s
     {{
         "product": "product type or 'unknown'",
         "confidence": "percentage 0-100",
-        "language": "one of en, fr, es or unkonwn",
+        "language": "one of en, fr, es or unknown",
         "explanation": "reasoning for product selection"
-        "advice" : "either trust predicted product type or seek clarification from requestor"
+        "advice" : "either trust predicted product type or seek clarification from requester"
     }}
 ]
 """
@@ -85,8 +85,8 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
     * Reduce the "confidence" value significantly if any assumptions or ambiguous terms were used.
 3.  **Advice Section:**
     * **NEVER state "ok to quote" if there is ANY ambiguity.**
-    * **ALWAYS write a request for clarification, addressed to the requestor, stating precisely what needs clarification, if there is ANY doubt.**
-    * The request for clarification should be a complete sentence and directly address the requestor.
+    * **ALWAYS write a request for clarification, addressed to the requester, stating precisely what needs clarification, if there is ANY doubt.**
+    * The request for clarification should be a complete sentence and directly address the requester.
     
 **Examples:**
 
@@ -116,10 +116,10 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
         "autocall_barrier": "value %",
         "notional": "value currency",
         "from": "name",
-        "language": "one of en, fr, es or unkonwn",
+        "language": "one of en, fr, es or unknown",
         "confidence": "percentage %",
         "explanation": "parsing rationale and assumptions",
-        "advice" : "either proceed with quote or seek clarification from requestor"
+        "advice" : "either proceed with quote or seek clarification from requester"
     }}
 ]
 """
@@ -155,8 +155,8 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
     * Reduce the "confidence" value significantly if any assumptions or ambiguous terms were used.
 3.  **Advice Section:**
     * **NEVER state "ok to quote" if there is ANY ambiguity.**
-    * **ALWAYS write a request for clarification, addressed to the requestor, stating precisely what needs clarification, if there is ANY doubt.**
-    * The request for clarification should be a complete sentence and directly address the requestor.
+    * **ALWAYS write a request for clarification, addressed to the requester, stating precisely what needs clarification, if there is ANY doubt.**
+    * The request for clarification should be a complete sentence and directly address the requester.
 
 **Examples:**
 
@@ -187,7 +187,7 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
         "from": "name",
         "confidence": "percentage %",
         "explanation": "parsing rationale and assumptions",
-        "advice" : "either proceed with quote or seek clarification from requestor"
+        "advice" : "either proceed with quote or seek clarification from requester"
     }}
 ]
 """

@@ -1,6 +1,12 @@
-# RFQ Parsing with Retrieval Augmented Generation (RAG)
+# Deployment
 
 This project demonstrates RFQ parsing using Retrieval Augmented Generation (RAG) and deploys open-source components with Docker.
+
+## Table of Contents
+
+- [Deployment](#deployment)
+- [Prerequisites](#prerequisites)
+- [Setup Instructions](#setup-instructions)
 
 ## Deployment
 
@@ -37,6 +43,11 @@ Follow these steps to set up the project:
 
 2.  **Clone the Repository:**
     * Use `git clone` to download the project files.
+    ```sh
+    mkdir rfq-rag
+    cd rfq-rag
+    git clone https://github.com/parrisma/rfq-rag
+    ```
 
 3.  **Navigate to the Scripts Directory:**
     * Change your current directory to the `scripts` folder:
