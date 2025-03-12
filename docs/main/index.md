@@ -129,29 +129,6 @@ Here is a full example of an RFQ [prompt with examples](./rfq-prompt-with-exampl
 
 This prompt was formed using [langchain](https://www.langchain.com/) library, which takes a simple [text template](https://github.com/parrisma/rfq-rag/blob/main/langchain_prompt.py) and allows values to be embdded.
 
-e.g. a 
-```python
-# A very simplified RFQ template
-template = PromptTemplate.from_template(
-    """
-    Please quote this RFQ {rfq-text}
-    with respect to these example rfq's and associated results
-    {example-1} = {example-1-params-json}
-    {example-2} = {example-2-params-json}
-    response as valid json of format
-    "{'cpn'='?','maturity'='?','strike'='?'}"
-    """
-)
-
-# Inject the configurable details
-prompt = template.format(
-    rfq-text="Please quote this eln with terms a, b, c... ",
-    example-1="Please quote this eln with terms d, e, f... ",
-    example-1-params-json="{'cpn'='d','maturity'='e','strike'='f'}",
-    example-2="Please quote this eln with terms g, h, i ... ",
-    example-2-params-json="{'cpn'='g','maturity'='h','strike'='i'}",
-)
-```
 The [rfq prompt above](./rfq-prompt-with-examples.html) is all **totally imaginary** data, but if you cut and paste the whole prompt into any web based LLM such as Gemini, you will see that it can parse the rfq and will give output as below. This is exactly what we do in the demo, except the LLM we call is one running locally (privately) on our computer. 
 
 Here is a real json response from running the demo prompt
@@ -173,6 +150,30 @@ Here is a real json response from running the demo prompt
         "advice": "ok to quote"
     }
 ]
+```
+
+e.g. a simplified example of a prompt template
+```python
+# A very simplified RFQ template
+template = PromptTemplate.from_template(
+    """
+    Please quote this RFQ {rfq-text}
+    with respect to these example rfq's and associated results
+    {example-1} = {example-1-params-json}
+    {example-2} = {example-2-params-json}
+    response as valid json of format
+    "{'cpn'='?','maturity'='?','strike'='?'}"
+    """
+)
+
+# Inject the configurable details
+prompt = template.format(
+    rfq-text="Please quote this eln with terms a, b, c... ",
+    example-1="Please quote this eln with terms d, e, f... ",
+    example-1-params-json="{'cpn'='d','maturity'='e','strike'='f'}",
+    example-2="Please quote this eln with terms g, h, i ... ",
+    example-2-params-json="{'cpn'='g','maturity'='h','strike'='i'}",
+)
 ```
 
 ---

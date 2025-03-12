@@ -2,7 +2,16 @@
 
 Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code
 
-**Note**, _all of the se commands are run from project root & after having started Ollama and Chroma, see [deployment](../deployment/index.md)_
+## Table of Contents
+
+- [See all demo commands](#see-all-demo-commands)
+- [Generate RFQs' Only](#generate-rfqs-only)
+- [Test getting similar RFQ only](#test-getting-similar-rfq-only)
+- [Test full RFQ parsing](#test-full-rfq-parsing)
+
+---
+
+**Note**, _all of these commands are run from project root & after having started Ollama and Chroma, see [deployment](../deployment/index.md)_
 
 ## See all demo commands
 ```sh
