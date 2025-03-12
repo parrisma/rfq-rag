@@ -3,7 +3,9 @@
 This project demonstrates RFQ parsing using Retrieval Augmented Generation (RAG) and deploys open-source components with Docker.
 
 Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code
+
 ---
+
 ## Table of Contents
 
 - [Deployment](#deployment)
@@ -16,7 +18,9 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 
 1.  **Ollama:** ([ollama.com](https://ollama.com/)) - Downloads and runs Large Language Models (LLMs).
 2.  **ChromaDB:** ([trychroma.com](https://www.trychroma.com/)) - A vector database for storing example RFQs. This enables the *Retrieval Augmented* part of RAG, specializing the LLM prompt.
+
 ---
+
 ## Prerequisites
 
 1.  **Linux Environment:**
@@ -35,7 +39,14 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
     * For systems with lower resources, explore smaller models from the [Ollama model directory](https://ollama.com/search).
     * Smaller models offer faster processing but may exhibit reduced accuracy for complex reasoning tasks.
     * The demo will still run on lower spec machines.
+
+4. **Python**
+    * Conda and pip were used to manage the virtual environment
+    * the environment.yml is [here](https://github.com/parrisma/rfq-rag/blob/main/environment.yml) - edit the last line of teh file so the ```prefix``` matches your home directory
+    * Create env ```conda env create -f environment.yml```
+
 ---
+
 ## Setup Instructions
 
 Follow these steps to set up the project:
@@ -102,4 +113,3 @@ Follow these steps to set up the project:
         python ./rfq-rag-main-demo.py -om=<model name>
         ```
         you will also need to pass in other command line arguments depending on the tests you want to run. Not covered here.
-

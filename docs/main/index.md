@@ -13,7 +13,9 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
     1. [Creating Example RFQs](#create-examples)
     1. [Retrieve Relevant Examples](#retrieve-relevant-examples)
     1. [The full Flow](#the-full-flow)
----    
+
+--- 
+
 ## Design Overview
 
 Retrieval Augmented Generation (RAG) is a valuable technique when you need a Large Language Model (LLM) to generate responses based on:
@@ -21,7 +23,9 @@ Retrieval Augmented Generation (RAG) is a valuable technique when you need a Lar
 * **Up-to-date information:** For tasks involving very recent news.
 * **Internal data:** For accessing your organization's proprietary information.
 * **Specialized interpretations:** For requiring context-specific understanding beyond general knowledge.
+
 ---
+
 ## Problem Statement
 
 **Objective:** 
@@ -33,7 +37,9 @@ Retrieval Augmented Generation (RAG) is a valuable technique when you need a Lar
 * Confidence scoring implemented to prevent low-confidence automated responses.
 * Clear, LLM-generated explanations of parsing assumptions provided.
 * Client clarification requests generated when necessary.
+
 ---
+
 ## Application of RAG
 
 1. **Create Examples** Select cross section of relevant data to act as examples in prompt.
@@ -42,7 +48,9 @@ Retrieval Augmented Generation (RAG) is a valuable technique when you need a Lar
 1. **Augment the Prompt:** Add example directly in the prompt to automate RFQ response.
 1. **Prioritize the Examples:** LLM responds with given examples as source of truth.
 1. **Reply to Client**: Process RFQ of if LLM response ambiguous, seek client clarification
+
 ---
+
 ## Creating Example RFQs
 
 We need to [create a varied set of RFQ examples](https://github.com/parrisma/rfq-rag/blob/main/rfq_generator.py), covering different clients, languages, and products, and manually verify the pricing for each, given a request and response we can save for later use.
@@ -74,7 +82,9 @@ e.g.
     "language": "en"
 }
 ```
+
 ---
+
 ## Retrieve Relevant Examples
 
 ### Explanation
@@ -164,7 +174,9 @@ Here is a real json response from running the demo prompt
     }
 ]
 ```
+
 ---
+
 ## The full Flow
 
 The full workflow is shown below.
@@ -202,7 +214,9 @@ The LLM Advice, trust extract or ask for clarification
 ```text
 Dear François Martin, thank you for your request. Could you please clarify if the 18-year term is correct and intended for this ELN? Additionally, could you confirm the barrier level of 60% and how it applies to the structure? This will help ensure we provide an accurate quote. Best regards.
 ```
+
 ---
+
 ## Summary
 
 ### Upside
