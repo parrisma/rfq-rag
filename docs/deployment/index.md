@@ -3,20 +3,20 @@
 This project demonstrates RFQ parsing using Retrieval Augmented Generation (RAG) and deploys open-source components with Docker.
 
 Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code
-
+---
 ## Table of Contents
 
 - [Deployment](#deployment)
 - [Prerequisites](#prerequisites)
 - [Setup Instructions](#setup-instructions)
-
+---
 ## Deployment
 
 **Components:**
 
 1.  **Ollama:** ([ollama.com](https://ollama.com/)) - Downloads and runs Large Language Models (LLMs).
 2.  **ChromaDB:** ([trychroma.com](https://www.trychroma.com/)) - A vector database for storing example RFQs. This enables the *Retrieval Augmented* part of RAG, specializing the LLM prompt.
-
+---
 ## Prerequisites
 
 1.  **Linux Environment:**
@@ -35,7 +35,7 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
     * For systems with lower resources, explore smaller models from the [Ollama model directory](https://ollama.com/search).
     * Smaller models offer faster processing but may exhibit reduced accuracy for complex reasoning tasks.
     * The demo will still run on lower spec machines.
-
+---
 ## Setup Instructions
 
 Follow these steps to set up the project:

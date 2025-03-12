@@ -2,6 +2,8 @@
 
 Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code
 
+**NOTE** *all product terms, names etc used in this demo are 100% fictional, made up just for the purpose of illustration.*
+
 ## Table of Contents
 
 - [Design Overview](#design-overview)
@@ -11,6 +13,7 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
     1. [Creating Example RFQs](#create-examples)
     1. [Retrieve Relevant Examples](#retrieve-relevant-examples)
     1. [The full Flow](#the-full-flow)
+---    
 ## Design Overview
 
 Retrieval Augmented Generation (RAG) is a valuable technique when you need a Large Language Model (LLM) to generate responses based on:
@@ -18,7 +21,7 @@ Retrieval Augmented Generation (RAG) is a valuable technique when you need a Lar
 * **Up-to-date information:** For tasks involving very recent news.
 * **Internal data:** For accessing your organization's proprietary information.
 * **Specialized interpretations:** For requiring context-specific understanding beyond general knowledge.
-
+---
 ## Problem Statement
 
 **Objective:** 
@@ -30,7 +33,7 @@ Retrieval Augmented Generation (RAG) is a valuable technique when you need a Lar
 * Confidence scoring implemented to prevent low-confidence automated responses.
 * Clear, LLM-generated explanations of parsing assumptions provided.
 * Client clarification requests generated when necessary.
-
+---
 ## Application of RAG
 
 1. **Create Examples** Select cross section of relevant data to act as examples in prompt.
@@ -39,7 +42,7 @@ Retrieval Augmented Generation (RAG) is a valuable technique when you need a Lar
 1. **Augment the Prompt:** Add example directly in the prompt to automate RFQ response.
 1. **Prioritize the Examples:** LLM responds with given examples as source of truth.
 1. **Reply to Client**: Process RFQ of if LLM response ambiguous, seek client clarification
-
+---
 ## Creating Example RFQs
 
 We need to [create a varied set of RFQ examples](https://github.com/parrisma/rfq-rag/blob/main/rfq_generator.py), covering different clients, languages, and products, and manually verify the pricing for each, given a request and response we can save for later use.
@@ -71,10 +74,7 @@ e.g.
     "language": "en"
 }
 ```
-## Example Saving to Vector Database.
-
-When we get our RFQ we need to be able to look up similar
-
+---
 ## Retrieve Relevant Examples
 
 ### Explanation
@@ -83,7 +83,7 @@ A big part of RAG is being able to find examples to add to the prompt that are s
 
 Imagine you want to find wise quotes that are similar in meaning to a specific one, not just ones that use the same words. Regular text search is like looking for an exact word match, missing the underlying message. 
 
-To solve this, we use embeddings and vector databases. Embeddings turn quotes into sets of numbers that capture their meaning. Think of it as creating a map where quotes with similar meanings are placed closer together. 
+To solve this, we use embeddings and vector databases. Embeddings turns quotes into sets of numbers that capture their meaning. Think of it as creating a map where quotes with similar meanings are placed closer together. 
 
 Vector databases store these number-maps along with the original quotes. So when you ask for quotes with similar meaning, the database finds the number-maps that are closest to your example, and then gives you the corresponding quotes. 
 
@@ -97,7 +97,9 @@ if we get the RFQ
 ```
 We need five similar examples, with the expected parameters (as JSON) to embed in the prompt. So we ask the vector DB (Chroma) to search for similar examples we saved earlier. 
 
-As we can see below it has found examples in spanish (even tho the database has english and spanish also), they are also for the same financial product. The *Dist* number is the measure of how *far* they are away in *meaning* terms from the given rfq.
+As we can see below it has found examples in spanish (even tho the database has english and spanish also), they are also for the same financial product. 
+
+The *Dist* number is the measure of how *far* they are away in *meaning* terms from the given rfq.
 
 ```text
 > Dist: [7661.57], Doc: Oye, cotiza esta autocall. barr auto 105 porcentaje, Nominal USD $10000, frec llamada semestralmente, Subyacente LZL.US, Plazo 1 años,  12 %, Barrera 50 %, Cupón semi. Por favor, házmelo saber cuando tengas el precio. Francisco Martínez
@@ -122,7 +124,7 @@ e.g. a
 # A very simplified RFQ template
 template = PromptTemplate.from_template(
     """
-    Please quote this RFQ {rfq-test}
+    Please quote this RFQ {rfq-text}
     with respect to these example rfq's and associated results
     {example-1} = {example-1-params-json}
     {example-2} = {example-2-params-json}
@@ -133,16 +135,16 @@ template = PromptTemplate.from_template(
 
 # Inject the configurable details
 prompt = template.format(
-    rfq-texr="Please quote this eln with terms a, b, c... ",
+    rfq-text="Please quote this eln with terms a, b, c... ",
     example-1="Please quote this eln with terms d, e, f... ",
     example-1-params-json="{'cpn'='d','maturity'='e','strike'='f'}",
     example-2="Please quote this eln with terms g, h, i ... ",
     example-2-params-json="{'cpn'='g','maturity'='h','strike'='i'}",
 )
 ```
-The [rfq prompt above](./rfq-prompt-with-examples.html) is all **totally imaginary** data, but if you cut and paste the whole prompt into any web based LLM such as Gemini, you will see that it can parse the rfq and will give output as below. This is exactly what we do in the demo, except the LLM we call is one running locally (privatly) on our computer. 
+The [rfq prompt above](./rfq-prompt-with-examples.html) is all **totally imaginary** data, but if you cut and paste the whole prompt into any web based LLM such as Gemini, you will see that it can parse the rfq and will give output as below. This is exactly what we do in the demo, except the LLM we call is one running locally (privately) on our computer. 
 
-
+Here is a real json response from running the demo prompt
 ```json
 [
     {
@@ -162,6 +164,7 @@ The [rfq prompt above](./rfq-prompt-with-examples.html) is all **totally imagina
     }
 ]
 ```
+---
 ## The full Flow
 
 The full workflow is shown below.
@@ -169,11 +172,18 @@ The full workflow is shown below.
 ![Creation of Examples](./rag-full-flow.png)
 
 1. **RFQ From Client**
+    * free test in any of three languagess fr two product types
 1. **Get similar examples to client RFQ**
+    * Use embeddings & vector DB to get sematically similar quotes
 1. **Create the prompt with RFQ & examples**
-1. **Ask LLM to extract paramaters & explanation**
+    * Supply examples to prompt to give LLM specialist knowledge
+1. **Ask LLM to extract parameters & explanation**
+    * The explanation helps with the AI explainability problem if the result is questioned by client in the future
 1. **If all OK price the product**
+    * If extract is confident, we can auto price
 1. **Pass price or error report to trader**
+    * The price will be sent back, normally via person for sanity checks
+    * Trader can also look a clarification commentary from model
 1. **Pass price or request for clarification with client**
 
 ## A real demo example
@@ -192,7 +202,7 @@ The LLM Advice, trust extract or ask for clarification
 ```text
 Dear François Martin, thank you for your request. Could you please clarify if the 18-year term is correct and intended for this ELN? Additionally, could you confirm the barrier level of 60% and how it applies to the structure? This will help ensure we provide an accurate quote. Best regards.
 ```
-
+---
 ## Summary
 
 ### Upside
