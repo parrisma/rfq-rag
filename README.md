@@ -14,14 +14,7 @@ These RFQs are:
 * **Multilingual:** Arriving in English, French, and Spanish.
 * **Variable:** Written with typos, abbreviations, and jumbled information.
 
-And because we're dealing with client interactions, accuracy is paramount. We need a system that:
-
-* **Extracts trade terms with precision:** Converting messy text into structured data for automated pricing.
-* **Provides a confidence score:** Letting us know when to seek clarification.
-* **Explains its reasoning:** Detailing any assumptions made.
-* **Recommends action:** Advising whether to quote or request more information.
-
-To simulate this challenge, we've generated hundreds of realistic, albeit fictional, RFQs. These requests, covering two complex product types, are designed to mimic the chaos of real-world client communications.
+Because we're dealing with client interactions, accuracy is paramount. We need a system that does not misinform. So, to simulate this challenge, we've generated hundreds of realistic, albeit **fictional**, RFQs. These requests, covering two complex product types, are designed to mimic the chaos of real-world client communications.
 
 **Our RAG-powered solution delivers:**
 
