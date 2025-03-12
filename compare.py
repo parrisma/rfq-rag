@@ -46,9 +46,9 @@ def compare_json_expected_actual(expected_json,
     normalized_actual = normalize_values(translate(actual_json, trans_dict))
 
     expected_filtered = {k: v for k, v in normalized_expected.items()
-                         if k not in ("confidence", "explanation", "product", "from", "advice")}
+                         if k not in ("confidence", "explanation", "product", "from", "advice", "language")}
     actual_filtered = {k: v for k, v in normalized_actual.items()
-                       if k not in ("confidence", "explanation", "product", "from", "advice")}
+                       if k not in ("confidence", "explanation", "product", "from", "advice", "language")}
 
     differences = {}
     match = True

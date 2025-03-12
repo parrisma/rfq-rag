@@ -44,7 +44,7 @@ def get_options(ollama_host: str,
                             help="The username to use for the demo, default is the current user.")
     # Optional arguments
     parser.add_argument("-om", "--ollama-model", type=str, default=ollama_model,
-                        help=f"Ollama LLM to use, defualt is {ollama_model}")
+                        help=f"Ollama LLM to use, default is {ollama_model}")
     parser.add_argument("-oh", "--ollama-host", type=str,
                         default=ollama_host, help=f"Ollama host & port URI to use, default is {ollama_host}")
     parser.add_argument("-ch", "--chroma_host", type=str,
@@ -68,7 +68,7 @@ def get_options(ollama_host: str,
     parser.add_argument("-kr", "--keep-rfq", action="store_true",
                         help="Keep any collections created as part of the demo rather than deleting them at the end")
     parser.add_argument("-nt", "--num_tests", type=int,
-                        default=5, help="The number test cycles to perform for rfq pasring")
+                        default=5, help="The number test cycles to perform for rfq parsing")
 
     try:
         args = parser.parse_args()

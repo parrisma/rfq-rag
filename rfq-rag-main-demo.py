@@ -3,12 +3,12 @@ import uuid
 from functools import partial
 from util import clear_screen, get_options, flatten_dict
 from chroma_util import test_chroma_connection, chroma_bootstrap_and_deepclean, get_similar_rfqs, chroma_host, chroma_port
-from ollama_util import ollama_runing_and_model_loaded, generate_ollama_embedding, get_product_taxonomy, get_parsed_rfq, ollama_host, ollama_model
+from ollama_util import ollama_running_and_model_loaded, generate_ollama_embedding, get_product_taxonomy, get_parsed_rfq, ollama_host, ollama_model
 from rfq_generator import generate_random_rfq
 from langchain_prompt import Example
 from compare import compare_json_expected_actual
 
-_username, \
+_, \
     _ollama_model, \
     _ollama_host, \
     _chroma_host, \
@@ -27,7 +27,7 @@ if _clear_screen:
     clear_screen()
 
 print("\n############ C H E C K   O L L A M A ###################\n")
-ollama_status = ollama_runing_and_model_loaded(host=_ollama_host, model_name=_ollama_model)
+ollama_status = ollama_running_and_model_loaded(host=_ollama_host, model_name=_ollama_model)
 print(f"Ollama - running & required LLM loaded: {ollama_status}")
 
 print("\n############ C H E C K   C H R O M A - D B #############\n")

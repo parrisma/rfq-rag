@@ -225,7 +225,7 @@ def generate_random_rfq():
 if __name__ == "__main__":
     simple = False  # False give a full dump of json
     clear_screen()
-    for _ in range(100):
+    for _ in range(5):
         if simple:
             print(f"> {generate_random_rfq()['request']}\n")
         else:

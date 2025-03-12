@@ -2,6 +2,8 @@
 
 This project demonstrates RFQ parsing using Retrieval Augmented Generation (RAG) and deploys open-source components with Docker.
 
+Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code
+
 ## Table of Contents
 
 - [Deployment](#deployment)
@@ -75,16 +77,16 @@ Follow these steps to set up the project:
             ```sh
             docker exec -it ollama-gpu /bin/bash
             ```
-    2.  **Find Your Model:**
+    1.  **Find Your Model:**
         * Browse the [Ollama model directory](https://ollama.com/search) to find the desired model.
-    3.  **Run the Model:**
+    1.  **Run the Model:**
         * Inside the Ollama container, execute:
             ```sh
             ollama run <model-name>
             ```
             * Note: Downloading the model may take time depending on its size.
 
-    4.  **Verify the Model:**
+    1.  **Verify the Model:**
         * Exit the current model:
             ```sh
             /bye
@@ -94,7 +96,7 @@ Follow these steps to set up the project:
             ollama ps
             ```
             * This confirms your chosen model is active.
-    4.  **Let the demo script know**
+    1.  **Let the demo script know**
         * Pass in command line arg
         ```sh
         python ./rfq-rag-main-demo.py -om=<model name>
