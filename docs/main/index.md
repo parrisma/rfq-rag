@@ -1,5 +1,7 @@
 # Overview
 
+Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code
+
 ## Table of Contents
 
 - [Design Overview](#design-overview)
@@ -8,7 +10,7 @@
 - [Demo Operation](#create-examples)
     1. [Creating Example RFQs](#create-examples)
     1. [Retrieve Relevant Examples](#retrieve-relevant-examples)
-
+    1. [The full Flow](#the-full-flow)
 ## Design Overview
 
 Retrieval Augmented Generation (RAG) is a valuable technique when you need a Large Language Model (LLM) to generate responses based on:
@@ -42,7 +44,7 @@ Retrieval Augmented Generation (RAG) is a valuable technique when you need a Lar
 
 We need to [create a varied set of RFQ examples](https://github.com/parrisma/rfq-rag/blob/main/rfq_generator.py), covering different clients, languages, and products, and manually verify the pricing for each, given a request and response we can save for later use.
 
-![Alt text](./rag-example-creation.png)
+![Creation of Examples](./rag-example-creation.png)
 
 The demo project creates totally fictional requests for quote for two financial products. These RFQ,s, by design, are colloquial, with typo's and abbreviations and are in three languages, examples below
 
@@ -53,8 +55,8 @@ The demo project creates totally fictional requests for quote for two financial 
 
 > Need a price on dis eln RFQ, thx.  40 percent, Cpn 2 % fixed, Under TPH.SW, Notional USD $5000,  quarterly, Participation 90 percent, Mat 2 yrs. Thank you in advance for your prompt response. Grace
 ```
-For each example we also remember the exact details, such that we can save and use the text and the expected result as examples to give to the model.
-
+For each example we also remember the exact details, such that we can save and use the text and the expected result as examples to give to the model. Ultimately it is these details we need to automated the pricing reply to teh client.
+e.g.
 ```json
 "parameters": {
     "underlying": "TGF.PA",
@@ -93,7 +95,9 @@ if we get the RFQ
 ```text
 ¿Podría cotizar este instrumento autocall?  1 años, Subyac CIF.T,  semestralmente,  semestralmente, Barrera 60 pct,  12 porcentaje,  105 %, Nominal USD $20000. Por favor avisa cuando tengas precios disponibles. Enrique Martínez
 ```
-We need five similar examples, with the expected parameters (as JSON) to embed in the prompt. So we ask the vector DB (Chroma) to search for similar examples we saved earlier. As we can see below it has found examples in spanish (even tho the database has english and spanish also), they are also for teh same financial product.
+We need five similar examples, with the expected parameters (as JSON) to embed in the prompt. So we ask the vector DB (Chroma) to search for similar examples we saved earlier. 
+
+As we can see below it has found examples in spanish (even tho the database has english and spanish also), they are also for the same financial product. The *Dist* number is the measure of how *far* they are away in *meaning* terms from the given rfq.
 
 ```text
 > Dist: [7661.57], Doc: Oye, cotiza esta autocall. barr auto 105 porcentaje, Nominal USD $10000, frec llamada semestralmente, Subyacente LZL.US, Plazo 1 años,  12 %, Barrera 50 %, Cupón semi. Por favor, házmelo saber cuando tengas el precio. Francisco Martínez
@@ -109,29 +113,34 @@ We need five similar examples, with the expected parameters (as JSON) to embed i
 
 ### Resulting Prompt
 
-Here is a full example of a [prompt with examples](./rfq-prompt-with-examples.html). The added examples are in red and the prompt being parsed is shown in blue.
+Here is a full example of an RFQ [prompt with examples](./rfq-prompt-with-examples.html). The added examples are in red and the prompt being parsed is shown in blue.
 
-This was formed using langchain library, which takes a simple text template and allows values to be embdded.
+This prompt was formed using [langchain](https://www.langchain.com/) library, which takes a simple [text template](https://github.com/parrisma/rfq-rag/blob/main/langchain_prompt.py) and allows values to be embdded.
 
-e.g.
+e.g. a 
 ```python
-# Define template with what you need to configure
+# A very simplified RFQ template
 template = PromptTemplate.from_template(
     """
-    Write a short story about a {animal} that wants to be a {profession}. 
-    The story should be set in {location} and have a {tone} tone.
+    Please quote this RFQ {rfq-test}
+    with respect to these example rfq's and associated results
+    {example-1} = {example-1-params-json}
+    {example-2} = {example-2-params-json}
+    response as valid json of format
+    "{'cpn'='?','maturity'='?','strike'='?'}"
     """
 )
 
 # Inject the configurable details
 prompt = template.format(
-    animal="squirrel",
-    profession="chef",
-    location="a bustling city park",
-    tone="humorous",
+    rfq-texr="Please quote this eln with terms a, b, c... ",
+    example-1="Please quote this eln with terms d, e, f... ",
+    example-1-params-json="{'cpn'='d','maturity'='e','strike'='f'}",
+    example-2="Please quote this eln with terms g, h, i ... ",
+    example-2-params-json="{'cpn'='g','maturity'='h','strike'='i'}",
 )
 ```
-This is all **totally imaginary** data, but if you cut and paste the whole prompt into any web based LLM such as Gemini, you will see that it can parse the rfq and will give output as below. This is exactly what we do in the demo, except the LLM we call is one running locally (privatly) on our computer. 
+The [rfq prompt above](./rfq-prompt-with-examples.html) is all **totally imaginary** data, but if you cut and paste the whole prompt into any web based LLM such as Gemini, you will see that it can parse the rfq and will give output as below. This is exactly what we do in the demo, except the LLM we call is one running locally (privatly) on our computer. 
 
 
 ```json
@@ -153,3 +162,45 @@ This is all **totally imaginary** data, but if you cut and paste the whole promp
     }
 ]
 ```
+## The full Flow
+
+The full workflow is shown below.
+
+![Creation of Examples](./rag-full-flow.png)
+
+1. **RFQ From Client**
+1. **Get similar examples to client RFQ**
+1. **Create the prompt with RFQ & examples**
+1. **Ask LLM to extract paramaters & explanation**
+1. **If all OK price the product**
+1. **Pass price or error report to trader**
+1. **Pass price or request for clarification with client**
+
+## A real demo example
+
+The RFQ request
+```text
+J'ai besoin d'un prix pour la eln suivante. Cpn 6 pourcentage fix,  USD $40000,  90 %, Terme 18 ans, Fréq Cpn annuellement, Barrière 60 pourcentage, Sous-jac FAF.MX. Merci, j'apprécie votre assistance. François Martin
+```
+
+The LLM Explanation, goes some way to address explaionability 
+```text
+The RFQ explicitly mentions eln in the context of a structured equity derivative product. The terms provided, such as coupon (Cpn), barrier level, and underlying asset (Sous-jac FAF.MX), are consistent with an ELN (Equity Linked Note) structure. However, there is some ambiguity regarding the term Terme 18 ans which could be interpreted as a very long maturity period for an ELN, which is unusual but not impossible
+```
+
+The LLM Advice, trust extract or ask for clarification
+```text
+Dear François Martin, thank you for your request. Could you please clarify if the 18-year term is correct and intended for this ELN? Additionally, could you confirm the barrier level of 60% and how it applies to the structure? This will help ensure we provide an accurate quote. Best regards.
+```
+
+## Summary
+
+### Upside
+With a few commodity tools it is now possible to build workflows that can 
+* Extract specialst details reliably 
+* Process colloquial and multi ligual text
+* Explain the resoning behind the process
+* Self assess confidence levels to manage risk and escalations in automated flows.
+
+### Downside
+It's a more sophitocated stack than is traditional and it consumes a significant amount more compute.

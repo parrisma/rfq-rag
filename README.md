@@ -1,8 +1,10 @@
-# Automating Tedious Tasks with AI: RFQ Parsing with RAG
+# Automating Tedious Tasks with LLMs: RFQ Parsing with RAG
 
-Let's face it, repetitive tasks drain our energy and stifle creativity. But what if we could offload them to AI? Large Language Models (LLMs) offer a powerful solution, but they often lack the specialized knowledge or access to sensitive data required for real-world applications.
+**NOTE** *all product terms, names etc used in this demo are 100% fictional, made up just for the purpose of illustration.*
 
-That's where **Retrieval Augmented Generation (RAG)** comes in! Imagine running your own private LLM, safe from internet exposure, and injecting it with the precise data it needs to excel. This is RAG's magic.
+Repetitive tasks drain energy and stifle creativity. So, how do we offload them to AI? Large Language Models (LLMs) offer a powerful solution, but they often lack the specialized knowledge or access to sensitive data required for real-world applications.
+
+That's where **Retrieval Augmented Generation (RAG)** comes in! Imagine running your own private LLM, safe from internet exposure, and injecting it with the precise data it needs to excel. This is RAG's.
 
 But how do we find that "precise data"? Understanding the context of complex information is key. This is where **vector databases** shine. They allow us to store and retrieve documents based on their semantic similarity to a given query, ensuring the LLM gets the most relevant information.
 
