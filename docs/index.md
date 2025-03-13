@@ -33,14 +33,14 @@ This functional demo parses structured product requests for quotes. It handles r
 1. **Explainability**
     - When AI makes decisions for clients, we need to be able to explain how it arrived at those decisions or assumptions. If something goes wrong, we must be able to show why the AI made a certain choice. With the demo, the AI explains its reasoning in plain language and provides a confidence score. If the score is low, we can interrupt the automation and ask for more client clarification. This makes the process more reliable and transparent.
 
-## Technology and Work Flow
+## Technology and WorkFlow
 
 The full workflow is shown below.
 
 ![Technology and Workflow](./main/rag-full-flow.png)
 
 1. **RFQ From Client**
-    * free test in any of three languages fr two product types
+    * free test in any of three languages for two product types
 1. **Get similar examples to client RFQ**
     * Use embeddings & vector DB to get semantically similar quotes
 1. **Create the prompt with RFQ & examples**

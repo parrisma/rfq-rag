@@ -42,7 +42,7 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 
 4. **Python**
     * Conda and pip were used to manage the virtual environment
-    * the environment.yml is [here](https://github.com/parrisma/rfq-rag/blob/main/environment.yml) - edit the last line of teh file so the ```prefix``` matches your home directory
+    * the environment.yml is [here](https://github.com/parrisma/rfq-rag/blob/main/environment.yml) - edit the last line of the file so the ```prefix``` matches your home directory
     * Create env ```conda env create -f environment.yml```
 
 ---

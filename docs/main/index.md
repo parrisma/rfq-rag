@@ -14,16 +14,6 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
     1. [Retrieve Relevant Examples](#retrieve-relevant-examples)
     1. [The full Flow](#the-full-flow)
 
---- 
-
-## Design Overview
-
-Retrieval Augmented Generation (RAG) is a valuable technique when you need a Large Language Model (LLM) to generate responses based on:
-
-* **Up-to-date information:** For tasks involving very recent news.
-* **Internal data:** For accessing your organization's proprietary information.
-* **Specialized interpretations:** For requiring context-specific understanding beyond general knowledge.
-
 ---
 
 ## Problem Statement
@@ -33,20 +23,22 @@ Retrieval Augmented Generation (RAG) is a valuable technique when you need a Lar
 
 **Key Results:**
 
-* Accurate, multilingual (EN, FR, ES) pricing data structured for automated systems reply.
-* Confidence scoring implemented to prevent low-confidence automated responses.
-* Clear, LLM-generated explanations of parsing assumptions provided.
-* Client clarification requests generated when necessary.
+* Reliably extract pricing parameters from free text as structured text (json)
+* LLM generated confidence scoring to prevent low-confidence automated responses.
+* Clear LLM explanations of parsing reasoning and assumptions.
+* LLM Written clarification requests generated when necessary.
+* Multilingual, English, Spanish & French
+* Tolerant of colloquial language, abbreviations, technical terms and typos
 
 ---
 
 ## Application of RAG
 
-1. **Create Examples** Select cross section of relevant data to act as examples in prompt.
+1. **Create Examples** Select a cross section of relevant data to act as examples in prompt.
 1. **Receive RFQ to automate** 
 1. **Retrieve Relevant Examples:** Gather examples related to the current RFQ automation.
-1. **Augment the Prompt:** Add example directly in the prompt to automate RFQ response.
-1. **Prioritize the Examples:** LLM responds with given examples as source of truth.
+1. **Augment the Prompt:** Add examples directly in the prompt to automate RFQ response.
+1. **Prioritize the Examples:** LLM responds with given examples as a source of truth.
 1. **Reply to Client**: Process RFQ of if LLM response ambiguous, seek client clarification
 
 ---
@@ -57,7 +49,7 @@ We need to [create a varied set of RFQ examples](https://github.com/parrisma/rfq
 
 ![Creation of Examples](./rag-example-creation.png)
 
-The demo project creates totally fictional requests for quote for two financial products. These RFQ,s, by design, are colloquial, with typo's and abbreviations and are in three languages, examples below
+The demo project creates totally fictional requests for quotes for two financial products. These RFQ,s, by design, are colloquial, with typo's and abbreviations and are in three languages, examples below
 
 ```text
 > Veuillez tarifer cette eln. Coupon 3 pct fix, Action RSH.T,  40 pct, Taille USD $40000, Terme 2 ans, Fréq Cpn annuel, Part 70 pct. Veuillez répondre quand vous le pouvez. David
@@ -66,7 +58,7 @@ The demo project creates totally fictional requests for quote for two financial 
 
 > Need a price on dis eln RFQ, thx.  40 percent, Cpn 2 % fixed, Under TPH.SW, Notional USD $5000,  quarterly, Participation 90 percent, Mat 2 yrs. Thank you in advance for your prompt response. Grace
 ```
-For each example we also remember the exact details, such that we can save and use the text and the expected result as examples to give to the model. Ultimately it is these details we need to automated the pricing reply to teh client.
+For each example we also remember the exact details, such that we can save and use the text and the expected result as examples to give to the model. Ultimately it is these details we need to automated the pricing reply to the client.
 e.g.
 ```json
 "parameters": {
@@ -91,9 +83,7 @@ e.g.
 
 A big part of RAG is being able to find examples to add to the prompt that are similar in *meaning*, in our case similar quotes. 
 
-Imagine you want to find wise quotes that are similar in meaning to a specific one, not just ones that use the same words. Regular text search is like looking for an exact word match, missing the underlying message. 
-
-To solve this, we use embeddings and vector databases. Embeddings turns quotes into sets of numbers that capture their meaning. Think of it as creating a map where quotes with similar meanings are placed closer together. 
+To solve this, we use embeddings and vector databases. Embeddings turn quotes into sets of numbers that capture their meaning. Think of it as creating a map where quotes with similar meanings are placed closer together. 
 
 Vector databases store these number-maps along with the original quotes. So when you ask for quotes with similar meaning, the database finds the number-maps that are closest to your example, and then gives you the corresponding quotes. 
 
@@ -107,7 +97,7 @@ if we get the RFQ
 ```
 We need five similar examples, with the expected parameters (as JSON) to embed in the prompt. So we ask the vector DB (Chroma) to search for similar examples we saved earlier. 
 
-As we can see below it has found examples in spanish (even tho the database has english and spanish also), they are also for the same financial product. 
+As we can see below it has found examples in spanish (even though the database has english and spanish also), they are also for the same financial product. 
 
 The *Dist* number is the measure of how *far* they are away in *meaning* terms from the given rfq.
 
@@ -127,7 +117,7 @@ The *Dist* number is the measure of how *far* they are away in *meaning* terms f
 
 Here is a full example of an RFQ [prompt with examples](./rfq-prompt-with-examples.html). The added examples are in red and the prompt being parsed is shown in blue.
 
-This prompt was formed using [langchain](https://www.langchain.com/) library, which takes a simple [text template](https://github.com/parrisma/rfq-rag/blob/main/langchain_prompt.py) and allows values to be embdded.
+This prompt was formed using [langchain](https://www.langchain.com/) library, which takes a simple [text template](https://github.com/parrisma/rfq-rag/blob/main/langchain_prompt.py) and allows values to be embedded.
 
 The [rfq prompt above](./rfq-prompt-with-examples.html) is all **totally imaginary** data, but if you cut and paste the whole prompt into any web based LLM such as Gemini, you will see that it can parse the rfq and will give output as below. This is exactly what we do in the demo, except the LLM we call is one running locally (privately) on our computer. 
 
@@ -185,9 +175,9 @@ The full workflow is shown below.
 ![Creation of Examples](./rag-full-flow.png)
 
 1. **RFQ From Client**
-    * free test in any of three languagess fr two product types
+    * free test in any of three languages for two product types
 1. **Get similar examples to client RFQ**
-    * Use embeddings & vector DB to get sematically similar quotes
+    * Use embeddings & vector DB to get semantically similar quotes
 1. **Create the prompt with RFQ & examples**
     * Supply examples to prompt to give LLM specialist knowledge
 1. **Ask LLM to extract parameters & explanation**
@@ -206,12 +196,12 @@ The RFQ request
 J'ai besoin d'un prix pour la eln suivante. Cpn 6 pourcentage fix,  USD $40000,  90 %, Terme 18 ans, Fréq Cpn annuellement, Barrière 60 pourcentage, Sous-jac FAF.MX. Merci, j'apprécie votre assistance. François Martin
 ```
 
-The LLM Explanation, goes some way to address explaionability 
+The LLM generated explanation, goes some way to address explainability 
 ```text
 The RFQ explicitly mentions eln in the context of a structured equity derivative product. The terms provided, such as coupon (Cpn), barrier level, and underlying asset (Sous-jac FAF.MX), are consistent with an ELN (Equity Linked Note) structure. However, there is some ambiguity regarding the term Terme 18 ans which could be interpreted as a very long maturity period for an ELN, which is unusual but not impossible
 ```
 
-The LLM Advice, trust extract or ask for clarification
+The LLM generated advice, trust extract or ask for clarification
 ```text
 Dear François Martin, thank you for your request. Could you please clarify if the 18-year term is correct and intended for this ELN? Additionally, could you confirm the barrier level of 60% and how it applies to the structure? This will help ensure we provide an accurate quote. Best regards.
 ```
@@ -222,10 +212,10 @@ Dear François Martin, thank you for your request. Could you please clarify if t
 
 ### Upside
 With a few commodity tools it is now possible to build workflows that can 
-* Extract specialst details reliably 
-* Process colloquial and multi ligual text
-* Explain the resoning behind the process
+* Extract specialist details reliably 
+* Process colloquial and multilingual text
+* Explain the reasoning behind the process
 * Self assess confidence levels to manage risk and escalations in automated flows.
 
 ### Downside
-It's a more sophitocated stack than is traditional and it consumes a significant amount more compute.
+It's a more sophisticated stack than is traditional and it consumes a significant amount more compute.
