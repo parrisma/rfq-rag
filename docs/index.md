@@ -2,7 +2,9 @@
 
 Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code
 
-**NOTE** *all product terms, names etc used in this demo are 100% fictional, made up just for the purpose of illustration.*
+**NOTES**
+* **All** data, names, products etc in the demo are **totally fictional** and designed & invented **just for illustration**.
+* The financial products are only partially defined, with sufficient just to prove they can be differentiated.
 
 ## Contents
 
@@ -40,7 +42,7 @@ The full workflow is shown below.
 ![Technology and Workflow](./main/rag-full-flow.png)
 
 1. **RFQ From Client**
-    * free test in any of three languages for two product types
+    * free text in any of three languages for two product types
 1. **Get similar examples to client RFQ**
     * Use embeddings & vector DB to get semantically similar quotes
 1. **Create the prompt with RFQ & examples**

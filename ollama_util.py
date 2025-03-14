@@ -5,7 +5,7 @@ import requests
 import json
 from ollama import embeddings
 from langchain_prompt import get_taxonomy_prompt, get_parse_prompt, Example
-from rfq_generator import products
+from product_def import products
 import uuid
 
 
@@ -129,11 +129,13 @@ def get_product_taxonomy(ref_request: str,
     res, reply = get_ollama_response(prompt, model=model, host=host)
     return res, reply
 
+
 def save_prompt(prompt: str) -> None:
     prompt_filename = f"prompt-{uuid.uuid4()}.txt"
     with open(prompt_filename, 'w') as file:
         file.write(prompt)
     return
+
 
 def get_parsed_rfq(ref_request: str,
                    product: str,

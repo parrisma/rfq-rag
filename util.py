@@ -6,6 +6,9 @@ import os
 import platform
 import argparse
 
+from chroma_util import test_chroma_connection
+from ollama_util import ollama_running_and_model_loaded
+
 
 def clear_screen() -> None:
     if platform.system() == "Windows":
@@ -69,6 +72,8 @@ def get_options(ollama_host: str,
                         help="Keep any collections created as part of the demo rather than deleting them at the end")
     parser.add_argument("-nt", "--num_tests", type=int,
                         default=5, help="The number test cycles to perform for rfq parsing")
+    parser.add_argument("-p", "--prompt", type=str,
+                        default=None, help="The filename of a saved prompt that is to be loaded and parsed")
 
     try:
         args = parser.parse_args()
@@ -96,7 +101,8 @@ def get_options(ollama_host: str,
             args.full_rfq_test,
             args.num_rfq,
             args.keep_rfq,
-            args.num_tests)
+            args.num_tests,
+            args.prompt)
 
 
 def flatten_dict(nested_dict: Dict,
@@ -117,3 +123,20 @@ def flatten_dict(nested_dict: Dict,
             flat_dict[new_key] = v
 
     return flat_dict
+
+
+def check_services_status(ollama_host: str, 
+                          ollama_model: str, 
+                          chroma_host: str, 
+                          chroma_port: str) -> None:
+    print("\n############ C H E C K   O L L A M A ###################\n")
+    ollama_status = ollama_running_and_model_loaded(host=ollama_host, model_name=ollama_model)
+    print(f"Ollama - running & required LLM loaded: {ollama_status}")
+
+    print("\n############ C H E C K   C H R O M A - D B #############\n")
+    chroma_status = test_chroma_connection(host=chroma_host, port=chroma_port)
+    print(f"Chroma - running : {chroma_status}")
+
+    if not ollama_status or not chroma_status:
+        print("Error - run ./scripts/start-ollama.sh to ensure all required services are running as containers")
+        exit()

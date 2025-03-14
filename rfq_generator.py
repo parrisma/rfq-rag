@@ -6,13 +6,7 @@ from collections import namedtuple
 from closing import get_colloquial_closing
 from opening_request import generate_colloquial_request
 from params import maturity_units_lang, percent_units_lang, frequencies_lang, coupon_types_lang, param_names_lang, names_lang
-
-Product = namedtuple('Product', ['name'])
-ELN = 0
-AUTOCALL = 1
-products = [None, None]
-products[ELN] = Product("eln").name
-products[AUTOCALL] = Product("autocall").name
+from product_def import ELN, AUTOCALL, products
 
 imaginary_stocks = {
     "BQM.PA": "Bennett Quantum Mining",

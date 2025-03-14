@@ -2,7 +2,9 @@
 
 Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code
 
-**NOTE** *all product terms, names etc used in this demo are 100% fictional, made up just for the purpose of illustration.*
+**NOTES**
+* **All** data, names, products etc in the demo are **totally fictional** and designed & invented **just for illustration**.
+* The financial products are only partially defined, with sufficient just to prove they can be differentiated.
 
 ## Table of Contents
 

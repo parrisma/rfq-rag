@@ -103,3 +103,10 @@ def get_similar_rfqs(rfq_to_match: str,
     suid = np.array([itm[0]["uuid"] for itm in smet]).reshape(np.shape(smet)[0], 1)
     res = np.hstack((sdst, sdoc, smet, suid)).tolist()
     return res
+
+
+def clean_up_collection(persistent_client: chromadb.PersistentClient,
+                        collection: chromadb.Collection) -> None:
+    print("\n############ D E L E T E  C O L L E C T I O N #########")
+    persistent_client.delete_collection(name=collection.name)
+    print(f"RfqRag - Collection {collection.name} deleted")

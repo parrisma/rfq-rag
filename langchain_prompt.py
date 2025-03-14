@@ -3,20 +3,30 @@ from typing import List, NamedTuple
 from langchain.prompts import PromptTemplate
 from collections import namedtuple
 
+## **NOTES**
+## **All** data, names, products etc in the demo are **totally fictional** and designed & invented up **just for illustration**.
+##
+## The parameters for the products are only partially defined here, we define just enough that there is a difference the
+## LLM has to correctly detect. 
+##
+## The actual parameters and their values are not critical for the purpose of this demo.
+##
+
 taxonomy_prompt_template = """
 Identify the structured equity derivative product type from the following RFQ, selecting from: [{products}].
 
-**Strict Clarification Policy:*
+**Strict Clarification Policy:**
 
 * **Any ambiguity or potential for multiple interpretations MUST result in a request for clarification.**
-* **If there is ANY doubt about the meaning of a term or phrase, request clarification.**
+* **Provide a clear and detailed explanation of why you assigned the chosen confidence level. This explanation should justify your decision and highlight any ambiguities or assumptions made during the extraction process**
+* **Remember, any instance of ambiguity or the need to make assumptions should result in a lower confidence score. Even seemingly minor assumptions should reduce the confidence level. Prioritize accuracy over speed and always request clarification when in doubt**
 * **Assume the worst-case scenario regarding ambiguity and prioritize accuracy over speed.**
 
 **Instructions:**
 
-1.  Identify the product type based on the RFQ
-2.  Provide a confidence level for the identification
-3.  Determine the language of the RFQ is written in
+1.  **Identify the product type based on the RFQ**
+2.  **Provide a confidence level for the identification**
+3.  **Determine the language of the RFQ is written in**
 4.  **Explanation Section:**
     * Explicitly state all assumptions made during parsing.
     * If any term or phrase has the potential for multiple interpretations, clearly state the ambiguity and explain how it was resolved.
@@ -25,6 +35,12 @@ Identify the structured equity derivative product type from the following RFQ, s
     * **NEVER state "ok to quote" if there is ANY ambiguity.**
     * **ALWAYS write a request for clarification, addressed to the requester, stating precisely what needs clarification, if there is ANY doubt.**
     * The request for clarification should be a complete sentence and directly address the requester.
+    * Assign a confidence level between 0% and 100% to the extracted parameters, based on the following four intervals:
+6.  **Confidence Level:**
+    * High Confidence (90-100%): Perfect match to examples, no ambiguity, direct translation.
+    * Moderate Confidence (70-89%): Minor phrasing variations, slight assumptions, strong contextual clues.
+    * Low Confidence (50-69%): Noticeable ambiguity, significant assumptions, potential for misinterpretation.
+    * Very Low Confidence (0-49%): Major ambiguities, missing information, high risk of incorrect extraction."**Examples:**    
 
 **RFQ:** {request}
 
@@ -69,7 +85,8 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
 **Strict Clarification Policy:**
 
 * **Any ambiguity or potential for multiple interpretations MUST result in a request for clarification.**
-* **If there is ANY doubt about the meaning of a term or phrase, request clarification.**
+* **Provide a clear and detailed explanation of why you assigned the chosen confidence level. This explanation should justify your decision and highlight any ambiguities or assumptions made during the extraction process**
+* **Remember, any instance of ambiguity or the need to make assumptions should result in a lower confidence score. Even seemingly minor assumptions should reduce the confidence level. Prioritize accuracy over speed and always request clarification when in doubt**
 * **Assume the worst-case scenario regarding ambiguity and prioritize accuracy over speed.**
 
 **Instructions:**
@@ -87,6 +104,12 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
     * **NEVER state "ok to quote" if there is ANY ambiguity.**
     * **ALWAYS write a request for clarification, addressed to the requester, stating precisely what needs clarification, if there is ANY doubt.**
     * The request for clarification should be a complete sentence and directly address the requester.
+    * Assign a confidence level between 0% and 100% to the extracted parameters, based on the following four intervals:
+4.  **Confidence Level:**
+    * High Confidence (90-100%): Perfect match to examples, no ambiguity, direct translation.
+    * Moderate Confidence (70-89%): Minor phrasing variations, slight assumptions, strong contextual clues.
+    * Low Confidence (50-69%): Noticeable ambiguity, significant assumptions, potential for misinterpretation.
+    * Very Low Confidence (0-49%): Major ambiguities, missing information, high risk of incorrect extraction."**Examples:**    
     
 **Examples:**
 
@@ -108,13 +131,13 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
     {{
         "product": "product type",
         "underlying": "ticker",
-        "maturity": "value months",
+        "maturity": "value years",
         "barrier": "value %",
-        "coupon": "frequency",
-        "coupon_rate": "value %",
+        "coupon": "value %",
+        "coupon_frequency": "frequency",
         "autocall_frequency": "frequency",
         "autocall_barrier": "value %",
-        "notional": "value currency",
+        "notional": "value currency"
         "from": "name",
         "language": "one of en, fr, es or unknown",
         "confidence": "percentage %",
@@ -139,7 +162,8 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
 **Strict Clarification Policy:**
 
 * **Any ambiguity or potential for multiple interpretations MUST result in a request for clarification.**
-* **If there is ANY doubt about the meaning of a term or phrase, request clarification.**
+* **Provide a clear and detailed explanation of why you assigned the chosen confidence level. This explanation should justify your decision and highlight any ambiguities or assumptions made during the extraction process**
+* **Remember, any instance of ambiguity or the need to make assumptions should result in a lower confidence score. Even seemingly minor assumptions should reduce the confidence level. Prioritize accuracy over speed and always request clarification when in doubt**
 * **Assume the worst-case scenario regarding ambiguity and prioritize accuracy over speed.**
 
 **Instructions:**
@@ -157,8 +181,12 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
     * **NEVER state "ok to quote" if there is ANY ambiguity.**
     * **ALWAYS write a request for clarification, addressed to the requester, stating precisely what needs clarification, if there is ANY doubt.**
     * The request for clarification should be a complete sentence and directly address the requester.
-
-**Examples:**
+4.  **Confidence Level:**
+    * Assign a confidence level between 0% and 100% to the extracted parameters, based on the following four intervals:
+    * High Confidence (90-100%): Perfect match to examples, no ambiguity, direct translation.
+    * Moderate Confidence (70-89%): Minor phrasing variations, slight assumptions, strong contextual clues.
+    * Low Confidence (50-69%): Noticeable ambiguity, significant assumptions, potential for misinterpretation.
+    * Very Low Confidence (0-49%): Major ambiguities, missing information, high risk of incorrect extraction."**Examples:**
 
 * RFQ: [{example1_rfq}], Parameters: {example1_params}
 * RFQ: [{example2_rfq}], Parameters: {example2_params}
@@ -182,7 +210,8 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
         "participation": "value %",
         "barrier": value %",
         "coupon": "value % ",
-        "coupon_type": "frequency",
+        "coupon_type": "type",
+        "coupon_frequency": "frequency",
         "notional": "value currency",
         "from": "name",
         "confidence": "percentage %",
