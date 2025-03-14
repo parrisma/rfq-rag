@@ -6,7 +6,6 @@ import json
 from ollama import embeddings
 from langchain_prompt import get_taxonomy_prompt, get_parse_prompt, Example
 from product_def import products
-import uuid
 
 
 class OllamaModel(Enum):
@@ -130,10 +129,16 @@ def get_product_taxonomy(ref_request: str,
     return res, reply
 
 
-def save_prompt(prompt: str) -> None:
-    prompt_filename = f"prompt-{uuid.uuid4()}.txt"
-    with open(prompt_filename, 'w') as file:
-        file.write(prompt)
+def save_prompt(prompt: str,
+                test_id: str) -> None:
+    try:
+        prompt_filename = f"prompt-{test_id}.txt"
+        with open(prompt_filename, 'w') as file:
+            file.write(prompt)
+        print(f"RfqRag - Fully qualified Prompt saved to: {prompt_filename}")
+    except Exception as e:
+        print(f"RfqRag - Failed to save prompt: {e} exiting test [{test_id}]")
+        exit(1)
     return
 
 
@@ -144,6 +149,7 @@ def get_parsed_rfq(ref_request: str,
                    ex3: Example,
                    ex4: Example,
                    ex5: Example,
+                   test_id: str,
                    model: str,
                    host: str
                    ) -> Tuple[bool, Dict]:
@@ -151,6 +157,6 @@ def get_parsed_rfq(ref_request: str,
         Use currently loaded Ollama LLM to review the given RFQ and parse out all pricing parameters
     """
     prompt = get_parse_prompt(ref_request, product, ex1, ex2, ex3, ex4, ex5)
-    save_prompt(prompt)
+    save_prompt(prompt, test_id)
     res, reply = get_ollama_response(prompt, model=model, host=host)
     return res, reply

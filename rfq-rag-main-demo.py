@@ -56,10 +56,11 @@ if _prompt is None:
                           _ollama_host)
 
     if _similarity_test or _full_rfq_test:
-        run_parsing_test(_num_test,
+        run_parsing_test(_similarity_test,
+                         _full_rfq_test,
+                         _num_test,
                          _ollama_model,
                          _ollama_host,
-                         _full_rfq_test,
                          embedding_generator,
                          collection)
     if new_collection and not _keep_rfq:
