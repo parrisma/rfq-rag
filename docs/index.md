@@ -11,7 +11,7 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 1. [Overview](#overview)
 1. [Approach](./main)
 1. [Deployment](./deployment)
-1. [Full Prompt with examples](./rfq-prompt-with-examples.html)
+1. [Full Prompt with examples](./main/rfq-prompt-with-examples.html)
 1. [Demo Examples](./demo)
 1. [Concepts](./concept.md)
 
