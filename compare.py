@@ -1,4 +1,5 @@
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
+import re
 import json
 from params import create_translation_dict
 
@@ -23,27 +24,38 @@ def translate(json_data: Dict,
     return json_data
 
 
+def normalize_json(data):
+    normalized_data = data.copy()
+
+    # Normalize maturity
+    if "maturity" in normalized_data and isinstance(normalized_data["maturity"], str):
+        maturity_str = normalized_data["maturity"].lower()
+        if "year" in maturity_str:
+            try:
+                value_str = maturity_str.split("year")[0].strip()
+                value = int(value_str)
+                normalized_data["maturity"] = f"{value * 12} months"
+            except ValueError:
+                raise RuntimeError(f"Warning: Could not convert maturity '{normalized_data['maturity']}' to months.")
+
+    # Normalize percentage values
+    percentage_fields = ["participation", "barrier", "coupon", "confidence", "autocall_barrier"]
+    for field in percentage_fields:
+        if field in normalized_data and isinstance(normalized_data[field], str):
+            cln_split = ((re.sub(r'\s+', ' ', normalized_data[field])).split())
+            if len(cln_split) > 0:
+                cln_val = re.sub(r'%', ' ', cln_split[0])
+                normalized_data[field] = f"{cln_val} %"
+
+    return normalized_data
+
+
 def compare_json_expected_actual(expected_json,
                                  actual_json) -> Tuple[bool, Dict]:
     trans_dict = create_translation_dict()
 
-    def normalize_values(data):
-        """Normalizes values for comparison (e.g., handles unit variations)."""
-        normalized_data = {}
-        for key, value in data.items():
-            normalized_value = value
-            if isinstance(value, str):
-                normalized_value = value.replace("percent", "%").replace("pct", "%").strip()
-                if key == "maturity" and "years" in normalized_value:
-                    years = int(normalized_value.split(" ")[0])
-                    normalized_value = str(years * 12) + " months"
-                if key == "coupon" or key == "coupon_frequency":
-                    normalized_value = normalized_value.replace("cpns", "coupons")
-            normalized_data[key] = normalized_value
-        return normalized_data
-
-    normalized_expected = normalize_values(translate(expected_json, trans_dict))
-    normalized_actual = normalize_values(translate(actual_json, trans_dict))
+    normalized_expected = normalize_json(translate(expected_json, trans_dict))
+    normalized_actual = normalize_json(translate(actual_json, trans_dict))
 
     expected_filtered = {k: v for k, v in normalized_expected.items()
                          if k not in ("confidence", "explanation", "product", "from", "advice", "language")}
@@ -71,7 +83,7 @@ expected_str = """
     "maturity": "1 years",
     "barrier": "50 percent",
     "coupon": "semi-annually cpns",
-    "coupon_rate": "15 pct",
+    "coupon": "15 pct",
     "autocall_frequency": "quarterly ",
     "autocall_barrier": "100 percent",
     "notional": "USD $30000",
@@ -86,7 +98,7 @@ actual_str = """
     "maturity": "12 months",
     "barrier": "50 %",
     "coupon": "semi-annually coupons",
-    "coupon_rate": "15 %",
+    "coupon": "15 %",
     "autocall_frequency": "quarterly",
     "autocall_barrier": "100 %",
     "notional": "USD $30000",
@@ -101,7 +113,7 @@ actual_fr = """
     "maturity": "3 ans",
     "barrier": "60 pourcentage",
     "coupon": "annuellement",
-    "coupon_rate": "15 pourcentage",
+    "coupon": "15 pourcentage",
     "autocall_frequency": "annuellement",
     "autocall_barrier": "100 pourcentage",
     "notional": "USD $20000",
@@ -115,7 +127,7 @@ actual_es = """
     "maturity": "4 a\u00f1os",
     "barrier": "70 porcentaje",
     "coupon": "semestralmente",
-    "coupon_rate": "8 porcentaje",
+    "coupon": "8 porcentaje",
     "autocall_frequency": "anualmente",
     "autocall_barrier": "105 porcentaje",
     "notional": "USD $25000",

@@ -96,6 +96,7 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
     * Every parameter must be quoted with units
     * Use the examples as the primary source of truth for how RFQ language maps to parameters.
     * Use FULL, UNABBREVIATED terms in the output JSON.
+    * Never add any parameters that are not explicit defined the json structure defined below 
 2.  **Explanation Section:**
     * Explicitly state all assumptions made during parsing.
     * If any term or phrase has the potential for multiple interpretations, clearly state the ambiguity and explain how it was resolved.
@@ -110,7 +111,9 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
     * Moderate Confidence (70-89%): Minor phrasing variations, slight assumptions, strong contextual clues.
     * Low Confidence (50-69%): Noticeable ambiguity, significant assumptions, potential for misinterpretation.
     * Very Low Confidence (0-49%): Major ambiguities, missing information, high risk of incorrect extraction."**Examples:**    
-    
+ 5.  **Parameter Assumptions:**
+    * Absolutely and without exception, treat any percentage value presented as the coupon rate unless it is DIRECTLY and EXPLICITLY labeled as a barrier. If there is ANY ambiguity, the percentage MUST be considered the coupon rate. This is a non-negotiable rule
+   
 **Examples:**
 
 * RFQ: [{example1_rfq}], Parameters: {example1_params}
@@ -173,6 +176,7 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
     * Every parameter must be quoted with units
     * Use the examples as the primary source of truth for how RFQ language maps to parameters.
     * Use FULL, UNABBREVIATED terms in the output JSON.
+    * Never add any parameters that are not explicit defined the json structure defined below
 2.  **Explanation Section:**
     * Explicitly state all assumptions made during parsing.
     * If any term or phrase has the potential for multiple interpretations, clearly state the ambiguity and explain how it was resolved.
@@ -187,6 +191,8 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
     * Moderate Confidence (70-89%): Minor phrasing variations, slight assumptions, strong contextual clues.
     * Low Confidence (50-69%): Noticeable ambiguity, significant assumptions, potential for misinterpretation.
     * Very Low Confidence (0-49%): Major ambiguities, missing information, high risk of incorrect extraction."**Examples:**
+5.  **Parameter Assumptions:**
+    * Absolutely and without exception, treat any percentage value presented as the coupon rate unless it is DIRECTLY and EXPLICITLY labeled as a barrier. If there is ANY ambiguity, the percentage MUST be considered the coupon rate. This is a non-negotiable rule
 
 * RFQ: [{example1_rfq}], Parameters: {example1_params}
 * RFQ: [{example2_rfq}], Parameters: {example2_params}
@@ -198,8 +204,8 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
 
 **Strict JSON Output Requirements:**
 
-* **The response MUST be valid JSON and parse correctly.**
-* **The JSON output MUST adhere to the following structure:**
+* **The response MUST be valid JSON and parse correctly**
+* **The JSON output MUST adhere to the following structure**
 
 ```json
 [

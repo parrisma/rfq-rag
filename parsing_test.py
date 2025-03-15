@@ -18,9 +18,10 @@ def run_parsing_test(_similarity_test: bool,
     num_tests = _num_test
 
     print("\n############ R U N  F U L L  T E S T S  #################\n")
-    test_id = str(uuid.uuid4())
     print(f"RfqRag - Running [{num_tests}] test cycles")
     for test_cycle in range(num_tests):
+        test_id = str(uuid.uuid4())
+        print("\n----------------------------------------------------------------\n")
         print(f"\nRfqRag - Generate random RFQ request for test cycle: [{test_cycle}] with test id: [{test_id}]")
         test_rfq = generate_random_rfq()
 
