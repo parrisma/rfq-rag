@@ -11,6 +11,7 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 - [Design Overview](#design-overview)
 - [Problem Statement](#problem-statement)
 - [Application of RAG](#application-of-rag)
+- [Full Prompt with examples](./rfq-prompt-with-examples.html)
 - [Demo Operation](#create-examples)
     1. [Creating Example RFQs](#create-examples)
     1. [Retrieve Relevant Examples](#retrieve-relevant-examples)
@@ -39,9 +40,9 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 1. **Create Examples** Select a cross section of relevant data to act as examples in prompt.
 1. **Receive RFQ to automate** 
 1. **Retrieve Relevant Examples:** Gather examples related to the current RFQ automation.
-1. **Augment the Prompt:** Add examples directly in the prompt to automate RFQ response.
-1. **Prioritize the Examples:** LLM responds with given examples as a source of truth.
-1. **Reply to Client**: Process RFQ of if LLM response ambiguous, seek client clarification
+1. **Augment the Prompt:** Add [examples](./rfq-prompt-with-examples.html#examples) directly in the prompt to automate RFQ response.
+1. **Prioritize the Examples:** LLM responds with given examples as a source of [truth](./rfq-prompt-with-examples.html#truth).
+1. **Reply to Client**: Process RFQ of if LLM response ambiguous, seek client [clarification](./rfq-prompt-with-examples.html#clear)
 
 ---
 
