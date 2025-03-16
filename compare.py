@@ -137,19 +137,22 @@ actual_es = """
 """
 
 if __name__ == "__main__":
+    test_trans = True
+    
     expected = json.loads(expected_str)
     actual = json.loads(actual_str)
 
-    trans_dict = create_translation_dict()
-    print("Translating English to English")
-    res = translate(expected, trans_dict, debug=True)
-    print("Res:", json.dumps(res, indent=4))
-    print("\nTranslating French to English")
-    res = translate(json.loads(actual_fr), trans_dict, debug=True)
-    print("Res:", json.dumps(res, indent=4))
-    print("\nTranslating Spanish to English")
-    res = translate(json.loads(actual_es), trans_dict, debug=True)
-    print("Res:", json.dumps(res, indent=4))
+    if test_trans:
+        trans_dict = create_translation_dict()
+        print("Translating English to English")
+        res = translate(expected, trans_dict, debug=True)
+        print("Res:", json.dumps(res, indent=4))
+        print("\nTranslating French to English")
+        res = translate(json.loads(actual_fr), trans_dict, debug=True)
+        print("Res:", json.dumps(res, indent=4))
+        print("\nTranslating Spanish to English")
+        res = translate(json.loads(actual_es), trans_dict, debug=True)
+        print("Res:", json.dumps(res, indent=4))
 
     print("\nField by field comparison, with normalization:")
     match, differences = compare_json_expected_actual(expected, actual)

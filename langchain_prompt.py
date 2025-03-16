@@ -116,11 +116,11 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
    
 **Examples:**
 
-* RFQ: [{example1_rfq}], Parameters: {example1_params}
-* RFQ: [{example2_rfq}], Parameters: {example2_params}
-* RFQ: [{example3_rfq}], Parameters: {example3_params}
-* RFQ: [{example4_rfq}], Parameters: {example4_params}
-* RFQ: [{example5_rfq}], Parameters: {example5_params}
+* Example RFQ 1: [{example1_rfq}], Resulting Parameters 1: {example1_params}
+* Example RFQ 2: [{example2_rfq}], Resulting Parameters 2: {example2_params}
+* Example RFQ 3: [{example3_rfq}], Resulting Parameters 3: {example3_params}
+* Example RFQ 4: [{example4_rfq}], Resulting Parameters 4: {example4_params}
+* Example RFQ 5: [{example5_rfq}], Resulting Parameters 5: {example5_params}
 
 **Input RFQ:** [{request}]
 
@@ -194,11 +194,11 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
 5.  **Parameter Assumptions:**
     * Absolutely and without exception, treat any percentage value presented as the coupon rate unless it is DIRECTLY and EXPLICITLY labeled as a barrier. If there is ANY ambiguity, the percentage MUST be considered the coupon rate. This is a non-negotiable rule
 
-* RFQ: [{example1_rfq}], Parameters: {example1_params}
-* RFQ: [{example2_rfq}], Parameters: {example2_params}
-* RFQ: [{example3_rfq}], Parameters: {example3_params}
-* RFQ: [{example4_rfq}], Parameters: {example4_params}
-* RFQ: [{example5_rfq}], Parameters: {example5_params}
+* Example RFQ 1: [{example1_rfq}], Resulting Parameters 1: {example1_params}
+* Example RFQ 2: [{example2_rfq}], Resulting Parameters 2: {example2_params}
+* Example RFQ 3: [{example3_rfq}], Resulting Parameters 3: {example3_params}
+* Example RFQ 4: [{example4_rfq}], Resulting Parameters 4: {example4_params}
+* Example RFQ 5: [{example5_rfq}], Resulting Parameters 5: {example5_params}
 
 **Input RFQ:** [{request}]
 

@@ -130,14 +130,9 @@ names_lang = {
     ]
 }
 
-# maturity_units_lang = {
-#    "en": [("years", "yrs")],
-#    "fr": [("ans", "ans")],
-#    "es": [("años", "años")]
-# }
-
-
 def create_translation_dict():
+    """Translate to full english word even for abreviations. 
+    """
     dictionary_list = [param_names_lang, percent_units_lang, percent_units_lang,
                        maturity_units_lang, frequencies_lang, coupon_types_lang]
     translation_dict = {}
@@ -147,7 +142,7 @@ def create_translation_dict():
                 for idy in range(len(dct["en"][idx])):
                     for lang in ["fr", "es", "en"]:
                         if dct[lang][idx][idy] not in translation_dict:
-                            translation_dict[dct[lang][idx][idy]] = dct["en"][idx][idy]
+                            translation_dict[dct[lang][idx][idy]] = dct["en"][idx][0] # idy = 0 as we use full eng vsn as trans.
                             # print(f"{dct[lang][idx][idy]} -> {dct['en'][idx][idy]}")
         elif isinstance(dct["en"], dict):
             for key in dct["en"].keys():
@@ -156,8 +151,8 @@ def create_translation_dict():
                         if idx < len(dct[lang][key]):
                             if dct[lang][key][idx] not in translation_dict:
                                 if dct[lang][key][idx] != "" and dct["en"][key][idx] != "":
-                                    translation_dict[dct[lang][key][idx]] = dct["en"][key][idx]
-                                    # print(f"{dct[lang][key][idx]} -> {dct['en'][key][idx]}")
+                                    translation_dict[dct[lang][key][idx]] = dct["en"][key][0] # idx = 0 as we use full eng vsn as trans.
+                                    # print(f"{dct[lang][key][idx]} -> {dct['en'][key][0]}")
         else:
             raise RuntimeError("Unknown dictionary type")
     return translation_dict

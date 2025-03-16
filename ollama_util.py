@@ -87,6 +87,10 @@ def get_ollama_response(prompt: str,
                         model: str,
                         host: str,
                         temperature=0.2) -> Tuple[bool, str]:
+    """
+       Low temperature as we are making a factual interpretation, but need it to be non zero
+       as we are parsing hand written text that needs some degree of flexibility.
+    """
     try:
         ollama_host = os.environ.get('OLLAMA_HOST', host)
         url = f"{ollama_host}/api/chat"
@@ -108,13 +112,13 @@ def get_ollama_response(prompt: str,
         return (True, json.loads(json_str))
 
     except requests.exceptions.RequestException as e:
-        return f"Error: Failed to connect to Ollama: {e}"
+        return (False, f"Error: Failed to connect to Ollama: {e}")
     except json.JSONDecodeError:
-        return "Error: Invalid JSON response from Ollama."
+        return (False, "Error: Invalid JSON response from Ollama.")
     except KeyError:
-        return "Error: Unexpected response format from Ollama."
+        return (False, "Error: Unexpected response format from Ollama.")
     except Exception as e:
-        return f"An unexpected error occurred: {e}"
+        return (False, f"An unexpected error occurred: {e}")
 
 
 def get_product_taxonomy(ref_request: str,
