@@ -25,7 +25,7 @@ This functional demo parses structured product requests for quotes. It handles r
 ## Core Concepts
 
 1. **Understanding**
-    * Large language models [understand](./rfq-prompt-with-examples.html#rules) the meaning of text, not just the words. This lets them interpret requests like 'extract pricing terms' even if there are abbreviations, shortcuts, or mistakes. And they can work across languages, like in our demo with Spanish, French, and English.
+    * Large language models [understand](./main/rfq-prompt-with-examples.html#rules) the meaning of text, not just the words. This lets them interpret requests like 'extract pricing terms' even if there are abbreviations, shortcuts, or mistakes. And they can work across languages, like in our demo with Spanish, French, and English.
 1. **Augmentation**
     * LLMs convert text into a kind of 'meaning code' called embeddings. This allows them to see when texts are similar. We use this to store correctly interpreted past RFQs in a special database (vector database), where the 'meaning code' is the key. So when we ask the LMM to interpret a new RFQ, the system finds similar past RFQs and their correct interpretations and adds them to the prompt. This helps the LLM give a more accurate answer, as it can use validated and very specific knowledge
 1. **Explainability**
