@@ -6,6 +6,9 @@ from prompt_test import run_prompt_test
 from util import check_services_status, clear_screen, get_options
 from chroma_util import clean_up_collection,  chroma_bootstrap_and_deepclean,  chroma_host, chroma_port
 from ollama_util import generate_ollama_embedding,  ollama_host, ollama_model
+from trail import log
+
+log().debug("\n############ R F Q - R A G - M A I N - D E M O ############\n")
 
 _, \
     _ollama_model, \
@@ -21,7 +24,8 @@ _, \
     _num_rfq, \
     _keep_rfq, \
     _num_test, \
-    _prompt = get_options(ollama_host, ollama_model, chroma_host, chroma_port)
+    _prompt, \
+    _temperature = get_options(ollama_host, ollama_model, chroma_host, chroma_port)
 
 if _clear_screen:
     clear_screen()
@@ -48,12 +52,13 @@ if _prompt is None:
                                                      embedding_generator,
                                                      collection)
     else:
-        print("RfqRag - Using existing collection of RFQs and Embeddings\n")
+        log().debug("Using existing collection of RFQs and Embeddings\n")
 
     if _product_type_test:
         product_type_test(_num_test,
                           _ollama_model,
-                          _ollama_host)
+                          _ollama_host,
+                          _temperature)
 
     if _similarity_test or _full_rfq_test:
         run_parsing_test(_similarity_test,
@@ -61,6 +66,7 @@ if _prompt is None:
                          _num_test,
                          _ollama_model,
                          _ollama_host,
+                         _temperature,
                          embedding_generator,
                          collection)
     if new_collection and not _keep_rfq:
@@ -69,6 +75,7 @@ if _prompt is None:
 else:
     run_prompt_test(_prompt,
                     _ollama_model,
-                    _ollama_host)
+                    _ollama_host,
+                    _temperature)
 
-print(f"RfqRag - All Done\n")
+log().debug(f"RfqRag - All Done\n")

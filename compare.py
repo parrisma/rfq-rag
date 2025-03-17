@@ -2,6 +2,7 @@ from typing import Dict, Tuple
 import re
 import json
 from params import create_translation_dict
+from trail import log
 
 
 def translate(json_data: Dict,
@@ -17,7 +18,7 @@ def translate(json_data: Dict,
                 translated.append(word)
         translated_value = " ".join(translated)
         if debug:
-            print(f"key: {key}, value: {value} -> translated: {translated_value}")
+            log().debug(f"key: {key}, value: {value} -> translated: {translated_value}")
         json_data[key] = translated_value
         if isinstance(value, dict):
             translate(value, translation_dict)
@@ -138,26 +139,26 @@ actual_es = """
 
 if __name__ == "__main__":
     test_trans = True
-    
+
     expected = json.loads(expected_str)
     actual = json.loads(actual_str)
 
     if test_trans:
         trans_dict = create_translation_dict()
-        print("Translating English to English")
+        log().debug("Translating English to English")
         res = translate(expected, trans_dict, debug=True)
-        print("Res:", json.dumps(res, indent=4))
-        print("\nTranslating French to English")
+        log().debug("Res:", json.dumps(res, indent=4))
+        log().debug("\nTranslating French to English")
         res = translate(json.loads(actual_fr), trans_dict, debug=True)
-        print("Res:", json.dumps(res, indent=4))
-        print("\nTranslating Spanish to English")
+        log().debug("Res:", json.dumps(res, indent=4))
+        log().debug("\nTranslating Spanish to English")
         res = translate(json.loads(actual_es), trans_dict, debug=True)
-        print("Res:", json.dumps(res, indent=4))
+        log().debug("Res:", json.dumps(res, indent=4))
 
-    print("\nField by field comparison, with normalization:")
+    log().debug("\nField by field comparison, with normalization:")
     match, differences = compare_json_expected_actual(expected, actual)
     if match:
-        print("Results match!")
+        log().debug("Results match!")
     else:
-        print("Results do not match. Differences:")
-        print(json.dumps(differences, indent=4))
+        log().debug("Results do not match. Differences:")
+        log().debug(json.dumps(differences, indent=4))

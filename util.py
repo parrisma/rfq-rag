@@ -1,13 +1,11 @@
-import json
-import sys
-from time import sleep
-from typing import Tuple, Any, Dict
 import os
+import sys
 import platform
 import argparse
-
+from typing import Tuple, Any, Dict
 from chroma_util import test_chroma_connection
 from ollama_util import ollama_running_and_model_loaded
+from trail import log
 
 
 def clear_screen() -> None:
@@ -74,19 +72,42 @@ def get_options(ollama_host: str,
                         default=5, help="The number test cycles to perform for rfq parsing")
     parser.add_argument("-p", "--prompt", type=str,
                         default=None, help="The filename of a saved prompt that is to be loaded and parsed")
-
+    parser.add_argument("-t", "--temperature", type=float,
+                        default=0.2, help="The model temperature, a positive float normally in range 0.0 to 1.0, default=0.2")
     try:
         args = parser.parse_args()
     except SystemExit as e:
         if e.code == 2:
-            print("Error: Invalid command-line arguments.")
-            parser.print_help()
+            log().debug("Error: Invalid command-line arguments.")
+            parser.log().debug_help()
             sys.exit(1)
         else:
             raise
 
     if args.use_collection is not None:
         args.remove_collections = False
+
+    if args.temperature < 0.0 or args.temperature > 1.0:
+        log().debug("Error: Invalid model temperature value. Must be in range 0.0 to 1.0 as RFQ parsing needs to be more deterministic than random.")
+        sys.exit(1)
+
+    log().debug("\n############ C O N T R O L  S E T T I N G S ###########\n")
+    log().debug(f"Username: {args.username}")
+    log().debug(f"Ollama Model: {args.ollama_model}")
+    log().debug(f"Ollama Host: {args.ollama_host}")
+    log().debug(f"Chroma Host: {args.chroma_host}")
+    log().debug(f"Chroma Port: {args.chroma_port}")
+    log().debug(f"Clear Screen: {args.clear_screen}")
+    log().debug(f"Remove Collections: {args.remove_collections}")
+    log().debug(f"Use Collection: {args.use_collection}")
+    log().debug(f"Product Type Test: {args.product_type_test}")
+    log().debug(f"Similarity Test: {args.similarity_test}")
+    log().debug(f"Full RFQ Test: {args.full_rfq_test}")
+    log().debug(f"Number of RFQs: {args.num_rfq}")
+    log().debug(f"Keep RFQ: {args.keep_rfq}")
+    log().debug(f"Number of Tests: {args.num_tests}")
+    log().debug(f"Prompt Filename: {args.prompt}")
+    log().debug(f"Model Temperature: {args.temperature}\n")
 
     return (args.username,
             args.ollama_model,
@@ -102,7 +123,8 @@ def get_options(ollama_host: str,
             args.num_rfq,
             args.keep_rfq,
             args.num_tests,
-            args.prompt)
+            args.prompt,
+            args.temperature)
 
 
 def flatten_dict(nested_dict: Dict,
@@ -125,18 +147,18 @@ def flatten_dict(nested_dict: Dict,
     return flat_dict
 
 
-def check_services_status(ollama_host: str, 
-                          ollama_model: str, 
-                          chroma_host: str, 
+def check_services_status(ollama_host: str,
+                          ollama_model: str,
+                          chroma_host: str,
                           chroma_port: str) -> None:
-    print("\n############ C H E C K   O L L A M A ###################\n")
+    log().debug("\n############ C H E C K   O L L A M A ###################\n")
     ollama_status = ollama_running_and_model_loaded(host=ollama_host, model_name=ollama_model)
-    print(f"Ollama - running & required LLM loaded: {ollama_status}")
+    log().debug(f"Ollama - running & required LLM loaded: {ollama_status}")
 
-    print("\n############ C H E C K   C H R O M A - D B #############\n")
+    log().debug("\n############ C H E C K   C H R O M A - D B #############\n")
     chroma_status = test_chroma_connection(host=chroma_host, port=chroma_port)
-    print(f"Chroma - running : {chroma_status}")
+    log().debug(f"Chroma - running : {chroma_status}")
 
     if not ollama_status or not chroma_status:
-        print("Error - run ./scripts/start-ollama.sh to ensure all required services are running as containers")
+        log().debug("Error - run ./scripts/start-ollama.sh to ensure all required services are running as containers")
         exit()

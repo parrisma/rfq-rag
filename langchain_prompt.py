@@ -3,48 +3,47 @@ from typing import List, NamedTuple
 from langchain.prompts import PromptTemplate
 from collections import namedtuple
 
-## **NOTES**
-## **All** data, names, products etc in the demo are **totally fictional** and designed & invented up **just for illustration**.
+# **NOTES**
+# **All** data, names, products etc in the demo are **totally fictional** and designed & invented up **just for illustration**.
 ##
-## The parameters for the products are only partially defined here, we define just enough that there is a difference the
-## LLM has to correctly detect. 
+# The parameters for the products are only partially defined here, we define just enough that there is a difference the
+# LLM has to correctly detect.
 ##
-## The actual parameters and their values are not critical for the purpose of this demo.
+# The actual parameters and their values are not critical for the purpose of this demo.
 ##
 
 taxonomy_prompt_template = """
 Identify the structured equity derivative product type from the following RFQ, selecting from: [{products}].
 
-**Strict Clarification Policy:**
+**Absolute Rules**
+ABSOLUTE RULE: DO NOT DEVIATE, DO NOT CONFIRM PRODUCT TYPE BELOW 90% CONFIDENCE. SEEK CLARIFICATION
+CONFIDENCE MUST BE BELOW 90% IF ANY OF ONE THESE ARE TRUE: AN ASSUMPTION WAS MADE, AN EXPLICIT TERM CLASSIFICATION IS MISSING
 
-* **Any ambiguity or potential for multiple interpretations MUST result in a request for clarification.**
-* **Provide a clear and detailed explanation of why you assigned the chosen confidence level. This explanation should justify your decision and highlight any ambiguities or assumptions made during the extraction process**
-* **Remember, any instance of ambiguity or the need to make assumptions should result in a lower confidence score. Even seemingly minor assumptions should reduce the confidence level. Prioritize accuracy over speed and always request clarification when in doubt**
-* **Assume the worst-case scenario regarding ambiguity and prioritize accuracy over speed.**
+**Confidence**
+range: 0-100% based on match to examples and level of ambiguity and inference.
+90-100%: Exact match, no ambiguity where the value type is explicitly given, cannot be 100% if any assumptions are made
+70-89%: Minor variations, slight assumptions
+50-69%: Noticeable ambiguity, significant assumptions
+0-49%: Major ambiguities, high risk of error
 
-**Instructions:**
+**Explanation**
+Provide a full explanation of product type classification
+Make it clear, easy to read and relevant to the person responsible for providing a correct client quote
+Document all assumptions, ambiguities and inferences taken from examples
 
-1.  **Identify the product type based on the RFQ**
-2.  **Provide a confidence level for the identification**
-3.  **Determine the language of the RFQ is written in**
-4.  **Explanation Section:**
-    * Explicitly state all assumptions made during parsing.
-    * If any term or phrase has the potential for multiple interpretations, clearly state the ambiguity and explain how it was resolved.
-    * Reduce the "confidence" value significantly if any assumptions or ambiguous terms were used.
-5.  **Advice Section:**
-    * **NEVER state "ok to quote" if there is ANY ambiguity.**
-    * **ALWAYS write a request for clarification, addressed to the requester, stating precisely what needs clarification, if there is ANY doubt.**
-    * The request for clarification should be a complete sentence and directly address the requester.
-    * Assign a confidence level between 0% and 100% to the extracted parameters, based on the following four intervals:
-6.  **Confidence Level:**
-    * High Confidence (90-100%): Perfect match to examples, no ambiguity, direct translation.
-    * Moderate Confidence (70-89%): Minor phrasing variations, slight assumptions, strong contextual clues.
-    * Low Confidence (50-69%): Noticeable ambiguity, significant assumptions, potential for misinterpretation.
-    * Very Low Confidence (0-49%): Major ambiguities, missing information, high risk of incorrect extraction."**Examples:**    
+**Advice**
+Strictly based on the confidence level only
+Make it clear, easy to read and relevant to the person responsible for providing a correct client quote
+Two options only: 1. "Product Identified" or 2. A clarification question to client, asking them to supply missing details or confirm the interpretation.
 
 **RFQ:** {request}
 
-**Response (JSON):**
+**Strict JSON Output Requirements:**
+
+The response MUST be valid JSON and parse correctly
+Use full, unabbreviated terms and include units in response
+The JSON output MUST adhere to the following structure
+Key fields must never be added, removed or have their name modified
 
 ```json
 [
@@ -71,50 +70,34 @@ def get_taxonomy_prompt(product_list: List[str],
 
 
 parse_prompt_autocall_template = """
-Parse the following structured equity derivatives autocall RFQ into JSON, extracting product-specific parameters with consistent units.
+Extract all possible quoting parameters from the given structured equity derivatives autocall, client supplied, request for quote (RFQ)
 
-**Crucial Guidance: Examples as the Definitive Standard**
+**Absolute Rules**
+ABSOLUTE RULE: DO NOT DEVIATE, DO NOT QUOTE BELOW 90% CONFIDENCE. SEEK CLARIFICATION
+CONFIDENCE MUST BE BELOW 90% IF ANY OF ONE THESE ARE TRUE: AN ASSUMPTION WAS MADE, AN EXPLICIT TERM CLASSIFICATION IS MISSING
 
-* **The provided examples are the ABSOLUTE and UNDISPUTED source of truth for how RFQ language maps to specific parameters.**
-* **You MUST treat the examples as the GOLD STANDARD. Any deviation from the patterns and relationships demonstrated in the examples is STRONGLY DISCOURAGED.**
-* **Your primary task is to identify and replicate the patterns of language-to-parameter mapping found in the examples.**
-* **PRIORITIZE the examples above any general knowledge, assumptions, or interpretations. If a pattern is clearly established in the examples, you MUST adhere to it, even if it contradicts other information.**
-* **Pay close attention to how specific phrases and keywords in the examples correspond to particular parameters and their units.**
-* **Maintain CONSISTENCY with the examples in terms of parameter extraction, unit representation, and JSON structure.**
+**Use of given Examples**: 
+Examples are the definitive, golden source of truth and always supersede general knowledge where there is an overlap.
+Deviation from example patterns is a last resort when examples do not cover a required interpretation.
 
-**Strict Clarification Policy:**
+**Confidence**
+range: 0-100% based on match to examples and level of ambiguity and inference.
+90-100%: Exact match, no ambiguity where the value type is explicitly given, cannot be 100% if any assumptions are made
+70-89%: Minor variations, slight assumptions
+50-69%: Noticeable ambiguity, significant assumptions
+0-49%: Major ambiguities, high risk of error
 
-* **Any ambiguity or potential for multiple interpretations MUST result in a request for clarification.**
-* **Provide a clear and detailed explanation of why you assigned the chosen confidence level. This explanation should justify your decision and highlight any ambiguities or assumptions made during the extraction process**
-* **Remember, any instance of ambiguity or the need to make assumptions should result in a lower confidence score. Even seemingly minor assumptions should reduce the confidence level. Prioritize accuracy over speed and always request clarification when in doubt**
-* **Assume the worst-case scenario regarding ambiguity and prioritize accuracy over speed.**
+**Explanation**
+Provide a full explanation of quoting parameter extraction.
+Make it clear, easy to read and relevant to the person responsible for providing a correct client quote
+Document all assumptions, ambiguities and inferences taken from examples
 
-**Instructions:**
+**Advice**
+Strictly based on the confidence level only
+Make it clear, easy to read and relevant to the person responsible for providing a correct client quote
+Two options only: 1. "Proceed with quote" or 2. A clarification question to client, asking them to supply missing details or confirm the interpretation.
 
-1.  **Extract Product Parameters:** 
-    * Extract all relevant product-specific parameters with consistent units.
-    * Every parameter must be quoted with units
-    * Use the examples as the primary source of truth for how RFQ language maps to parameters.
-    * Use FULL, UNABBREVIATED terms in the output JSON.
-    * Never add any parameters that are not explicit defined the json structure defined below 
-2.  **Explanation Section:**
-    * Explicitly state all assumptions made during parsing.
-    * If any term or phrase has the potential for multiple interpretations, clearly state the ambiguity and explain how it was resolved.
-    * Reduce the "confidence" value significantly if any assumptions or ambiguous terms were used.
-3.  **Advice Section:**
-    * **NEVER state "ok to quote" if there is ANY ambiguity.**
-    * **ALWAYS write a request for clarification, addressed to the requester, stating precisely what needs clarification, if there is ANY doubt.**
-    * The request for clarification should be a complete sentence and directly address the requester.
-    * Assign a confidence level between 0% and 100% to the extracted parameters, based on the following four intervals:
-4.  **Confidence Level:**
-    * High Confidence (90-100%): Perfect match to examples, no ambiguity, direct translation.
-    * Moderate Confidence (70-89%): Minor phrasing variations, slight assumptions, strong contextual clues.
-    * Low Confidence (50-69%): Noticeable ambiguity, significant assumptions, potential for misinterpretation.
-    * Very Low Confidence (0-49%): Major ambiguities, missing information, high risk of incorrect extraction."**Examples:**    
- 5.  **Parameter Assumptions:**
-    * Absolutely and without exception, treat any percentage value presented as the coupon rate unless it is DIRECTLY and EXPLICITLY labeled as a barrier. If there is ANY ambiguity, the percentage MUST be considered the coupon rate. This is a non-negotiable rule
-   
-**Examples:**
+**Examples, as golden source**
 
 * Example RFQ 1: [{example1_rfq}], Resulting Parameters 1: {example1_params}
 * Example RFQ 2: [{example2_rfq}], Resulting Parameters 2: {example2_params}
@@ -126,8 +109,10 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
 
 **Strict JSON Output Requirements:**
 
-* **The response MUST be valid JSON and parse correctly.**
-* **The JSON output MUST adhere to the following structure:**
+The response MUST be valid JSON and parse correctly
+Use full, unabbreviated terms and include units in response
+The JSON output MUST adhere to the following structure
+Key fields must never be added, removed or have their name modified
 
 ```json
 [
@@ -151,48 +136,34 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
 """
 
 parse_prompt_eln_template = """
-Parse the following structured equity derivatives autocall RFQ into JSON, extracting product-specific parameters with consistent units.
+Extract all possible quoting parameters from the given structured equity derivatives equity linked note, client supplied, request for quote (RFQ)
 
-**Crucial Guidance: Examples as the Definitive Standard**
+**Absolute Rules**
+ABSOLUTE RULE: DO NOT DEVIATE, DO NOT QUOTE BELOW 90% CONFIDENCE. SEEK CLARIFICATION
+CONFIDENCE MUST BE BELOW 90% IF ANY OF ONE THESE ARE TRUE: AN ASSUMPTION WAS MADE, AN EXPLICIT TERM CLASSIFICATION IS MISSING
 
-* **The provided examples are the ABSOLUTE and UNDISPUTED source of truth for how RFQ language maps to specific parameters.**
-* **You MUST treat the examples as the GOLD STANDARD. Any deviation from the patterns and relationships demonstrated in the examples is STRONGLY DISCOURAGED.**
-* **Your primary task is to identify and replicate the patterns of language-to-parameter mapping found in the examples.**
-* **PRIORITIZE the examples above any general knowledge, assumptions, or interpretations. If a pattern is clearly established in the examples, you MUST adhere to it, even if it contradicts other information.**
-* **Pay close attention to how specific phrases and keywords in the examples correspond to particular parameters and their units.**
-* **Maintain CONSISTENCY with the examples in terms of parameter extraction, unit representation, and JSON structure.**
+**Use of given Examples**: 
+Examples are the definitive, golden source of truth and always supersede general knowledge where there is an overlap.
+Deviation from example patterns is a last resort when examples do not cover a required interpretation.
 
-**Strict Clarification Policy:**
+**Confidence**
+range: 0-100% based on match to examples and level of ambiguity and inference.
+90-100%: Exact match, no ambiguity where the value type is explicitly given, cannot be 100% if any assumptions are made
+70-89%: Minor variations, slight assumptions
+50-69%: Noticeable ambiguity, significant assumptions
+0-49%: Major ambiguities, high risk of error
 
-* **Any ambiguity or potential for multiple interpretations MUST result in a request for clarification.**
-* **Provide a clear and detailed explanation of why you assigned the chosen confidence level. This explanation should justify your decision and highlight any ambiguities or assumptions made during the extraction process**
-* **Remember, any instance of ambiguity or the need to make assumptions should result in a lower confidence score. Even seemingly minor assumptions should reduce the confidence level. Prioritize accuracy over speed and always request clarification when in doubt**
-* **Assume the worst-case scenario regarding ambiguity and prioritize accuracy over speed.**
+**Explanation**
+Provide a full explanation of quoting parameter extraction.
+Make it clear, easy to read and relevant to the person responsible for providing a correct client quote
+Document all assumptions, ambiguities and inferences taken from examples
 
-**Instructions:**
+**Advice**
+Strictly based on the confidence level only
+Make it clear, easy to read and relevant to the person responsible for providing a correct client quote
+Two options only: 1. "Proceed with quote" or 2. A clarification question to client, asking them to supply missing details or confirm the interpretation.
 
-1.  **Extract Product Parameters:** 
-    * Extract all relevant product-specific parameters with consistent units.
-    * Every parameter must be quoted with units
-    * Use the examples as the primary source of truth for how RFQ language maps to parameters.
-    * Use FULL, UNABBREVIATED terms in the output JSON.
-    * Never add any parameters that are not explicit defined the json structure defined below
-2.  **Explanation Section:**
-    * Explicitly state all assumptions made during parsing.
-    * If any term or phrase has the potential for multiple interpretations, clearly state the ambiguity and explain how it was resolved.
-    * Reduce the "confidence" value significantly if any assumptions or ambiguous terms were used.
-3.  **Advice Section:**
-    * **NEVER state "ok to quote" if there is ANY ambiguity.**
-    * **ALWAYS write a request for clarification, addressed to the requester, stating precisely what needs clarification, if there is ANY doubt.**
-    * The request for clarification should be a complete sentence and directly address the requester.
-4.  **Confidence Level:**
-    * Assign a confidence level between 0% and 100% to the extracted parameters, based on the following four intervals:
-    * High Confidence (90-100%): Perfect match to examples, no ambiguity, direct translation.
-    * Moderate Confidence (70-89%): Minor phrasing variations, slight assumptions, strong contextual clues.
-    * Low Confidence (50-69%): Noticeable ambiguity, significant assumptions, potential for misinterpretation.
-    * Very Low Confidence (0-49%): Major ambiguities, missing information, high risk of incorrect extraction."**Examples:**
-5.  **Parameter Assumptions:**
-    * Absolutely and without exception, treat any percentage value presented as the coupon rate unless it is DIRECTLY and EXPLICITLY labeled as a barrier. If there is ANY ambiguity, the percentage MUST be considered the coupon rate. This is a non-negotiable rule
+**Examples, as golden source**
 
 * Example RFQ 1: [{example1_rfq}], Resulting Parameters 1: {example1_params}
 * Example RFQ 2: [{example2_rfq}], Resulting Parameters 2: {example2_params}
@@ -204,8 +175,10 @@ Parse the following structured equity derivatives autocall RFQ into JSON, extrac
 
 **Strict JSON Output Requirements:**
 
-* **The response MUST be valid JSON and parse correctly**
-* **The JSON output MUST adhere to the following structure**
+The response MUST be valid JSON and parse correctly
+Use full, unabbreviated terms and include units in response
+The JSON output MUST adhere to the following structure
+Key fields must never be added, removed or have their name modified
 
 ```json
 [

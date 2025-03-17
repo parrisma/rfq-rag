@@ -7,6 +7,7 @@ from closing import get_colloquial_closing
 from opening_request import generate_colloquial_request
 from params import maturity_units_lang, percent_units_lang, frequencies_lang, coupon_types_lang, param_names_lang, names_lang
 from product_def import ELN, AUTOCALL, products
+from trail import log
 
 imaginary_stocks = {
     "BQM.PA": "Bennett Quantum Mining",
@@ -221,6 +222,6 @@ if __name__ == "__main__":
     clear_screen()
     for _ in range(5):
         if simple:
-            print(f"> {generate_random_rfq()['request']}\n")
+            log().debug(f"> {generate_random_rfq()['request']}\n")
         else:
-            print(json.dumps(generate_random_rfq(), indent=3))
+            log().debug(json.dumps(generate_random_rfq(), indent=3))

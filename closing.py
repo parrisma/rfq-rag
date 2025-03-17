@@ -1,4 +1,5 @@
 import random
+from trail import log
 
 
 def get_colloquial_closing(language_code):
@@ -122,10 +123,10 @@ def get_colloquial_closing(language_code):
 
 
 if __name__ == "__main__":
-    print(get_colloquial_closing("en"))
-    print(get_colloquial_closing("fr"))
-    print(get_colloquial_closing("es"))
+    log().debug(get_colloquial_closing("en"))
+    log().debug(get_colloquial_closing("fr"))
+    log().debug(get_colloquial_closing("es"))
     try:
-        print(get_colloquial_closing("de"))
+        log().debug(get_colloquial_closing("de"))
     except ValueError as e:
-        print("Error raised as expected")
+        log().debug("Error raised as expected")

@@ -2,18 +2,19 @@
 
 Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code
 
-**NOTES**
+## NOTES
+
 * **All** data, names, products etc in the demo are **totally fictional** and designed & invented **just for illustration**.
 * The financial products are only partially defined, with sufficient just to prove they can be differentiated.
 
 ## Table of Contents
 
-- [Design Overview](#design-overview)
-- [Problem Statement](#problem-statement)
-- [Application of RAG](#application-of-rag)
-- [Full Prompt with examples](./rfq-prompt-with-examples.html)
-- [Demo Operation](#create-examples)
-    1. [Creating Example RFQs](#create-examples)
+* [Design Overview](#application-of-rag)
+* [Problem Statement](#problem-statement)
+* [Application of RAG](#application-of-rag)
+* [Full Prompt with examples](./rfq-prompt-with-examples.html)
+* [Demo Operation](#creating-example-rfqs)
+    1. [Creating Example RFQs](#creating-example-rfqs)
     1. [Retrieve Relevant Examples](#retrieve-relevant-examples)
     1. [The full Flow](#the-full-flow)
 
@@ -21,7 +22,8 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 
 ## Problem Statement
 
-**Objective:** 
+**Objective:**
+
 * Automate RFQ pricing detail extraction for seamless client quoting.
 
 **Key Results:**
@@ -38,11 +40,11 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 ## Application of RAG
 
 1. **Create Examples** Select a cross section of relevant data to act as examples in prompt.
-1. **Receive RFQ to automate** 
+1. **Receive RFQ to automate**
 1. **Retrieve Relevant Examples:** Gather examples related to the current RFQ automation.
 1. **Augment the Prompt:** Add [examples](./rfq-prompt-with-examples.html#examples) directly in the prompt to automate RFQ response.
-1. **Prioritize the Examples:** LLM responds with given examples as a source of [truth](./rfq-prompt-with-examples.html#truth).
-1. **Reply to Client**: Process RFQ of if LLM response ambiguous, seek client [clarification](./rfq-prompt-with-examples.html#clear)
+1. **Prioritize the Examples:** LLM responds with given examples as a source of [truth](./rfq-prompt-with-examples.html#rules).
+1. **Reply to Client**: Process RFQ of if LLM response ambiguous, seek client [clarification](./rfq-prompt-with-examples.html#confidence)
 
 ---
 
@@ -61,8 +63,10 @@ The demo project creates totally fictional requests for quotes for two financial
 
 > Need a price on dis eln RFQ, thx.  40 percent, Cpn 2 % fixed, Under TPH.SW, Notional USD $5000,  quarterly, Participation 90 percent, Mat 2 yrs. Thank you in advance for your prompt response. Grace
 ```
+
 For each example we also remember the exact details, such that we can save and use the text and the expected result as examples to give to the model. Ultimately it is these details we need to automated the pricing reply to the client.
 e.g.
+
 ```json
 "parameters": {
     "underlying": "TGF.PA",
@@ -84,23 +88,25 @@ e.g.
 
 ### Explanation
 
-A big part of RAG is being able to find examples to add to the prompt that are similar in *meaning*, in our case similar quotes. 
+A big part of RAG is being able to find examples to add to the prompt that are similar in *meaning*, in our case similar quotes.
 
-To solve this, we use embeddings and vector databases. Embeddings turn quotes into sets of numbers that capture their meaning. Think of it as creating a map where quotes with similar meanings are placed closer together. 
+To solve this, we use embeddings and vector databases. Embeddings turn quotes into sets of numbers that capture their meaning. Think of it as creating a map where quotes with similar meanings are placed closer together.
 
-Vector databases store these number-maps along with the original quotes. So when you ask for quotes with similar meaning, the database finds the number-maps that are closest to your example, and then gives you the corresponding quotes. 
+Vector databases store these number-maps along with the original quotes. So when you ask for quotes with similar meaning, the database finds the number-maps that are closest to your example, and then gives you the corresponding quotes.
 
 So, it allows computers to understand the "gist" of the quotes and find related ones based on their meaning, not just their words.
 
 ### Example
 
 if we get the RFQ
+
 ```text
 ¿Podría cotizar este instrumento autocall?  1 años, Subyac CIF.T,  semestralmente,  semestralmente, Barrera 60 pct,  12 porcentaje,  105 %, Nominal USD $20000. Por favor avisa cuando tengas precios disponibles. Enrique Martínez
 ```
-We need five similar examples, with the expected parameters (as JSON) to embed in the prompt. So we ask the vector DB (Chroma) to search for similar examples we saved earlier. 
 
-As we can see below it has found examples in spanish (even though the database has english and spanish also), they are also for the same financial product. 
+We need five similar examples, with the expected parameters (as JSON) to embed in the prompt. So we ask the vector DB (Chroma) to search for similar examples we saved earlier.
+
+As we can see below it has found examples in spanish (even though the database has english and spanish also), they are also for the same financial product.
 
 The *Dist* number is the measure of how *far* they are away in *meaning* terms from the given rfq.
 
@@ -122,9 +128,10 @@ Here is a full example of an RFQ [prompt with examples](./rfq-prompt-with-exampl
 
 This prompt was formed using [langchain](https://www.langchain.com/) library, which takes a simple [text template](https://github.com/parrisma/rfq-rag/blob/main/langchain_prompt.py) and allows values to be embedded.
 
-The [rfq prompt above](./rfq-prompt-with-examples.html) is all **totally imaginary** data, but if you cut and paste the whole prompt into any web based LLM such as Gemini, you will see that it can parse the rfq and will give output as below. This is exactly what we do in the demo, except the LLM we call is one running locally (privately) on our computer. 
+The [rfq prompt above](./rfq-prompt-with-examples.html) is all **totally imaginary** data, but if you cut and paste the whole prompt into any web based LLM such as Gemini, you will see that it can parse the rfq and will give output as below. This is exactly what we do in the demo, except the LLM we call is one running locally (privately) on our computer.
 
 Here is a real json response from running the demo prompt
+
 ```json
 [
     {
@@ -146,6 +153,7 @@ Here is a real json response from running the demo prompt
 ```
 
 e.g. a simplified example of a prompt template
+
 ```python
 # A very simplified RFQ template
 template = PromptTemplate.from_template(
@@ -195,16 +203,19 @@ The full workflow is shown below.
 ## A real demo example
 
 The RFQ request
+
 ```text
 J'ai besoin d'un prix pour la eln suivante. Cpn 6 pourcentage fix,  USD $40000,  90 %, Terme 18 ans, Fréq Cpn annuellement, Barrière 60 pourcentage, Sous-jac FAF.MX. Merci, j'apprécie votre assistance. François Martin
 ```
 
-The LLM generated explanation, goes some way to address explainability 
+The LLM generated explanation, goes some way to address explainability
+
 ```text
 The RFQ explicitly mentions eln in the context of a structured equity derivative product. The terms provided, such as coupon (Cpn), barrier level, and underlying asset (Sous-jac FAF.MX), are consistent with an ELN (Equity Linked Note) structure. However, there is some ambiguity regarding the term Terme 18 ans which could be interpreted as a very long maturity period for an ELN, which is unusual but not impossible
 ```
 
 The LLM generated advice, trust extract or ask for clarification
+
 ```text
 Dear François Martin, thank you for your request. Could you please clarify if the 18-year term is correct and intended for this ELN? Additionally, could you confirm the barrier level of 60% and how it applies to the structure? This will help ensure we provide an accurate quote. Best regards.
 ```
@@ -214,11 +225,14 @@ Dear François Martin, thank you for your request. Could you please clarify if t
 ## Summary
 
 ### Upside
-With a few commodity tools it is now possible to build workflows that can 
-* Extract specialist details reliably 
+
+With a few commodity tools it is now possible to build workflows that can
+
+* Extract specialist details reliably
 * Process colloquial and multilingual text
 * Explain the reasoning behind the process
 * Self assess confidence levels to manage risk and escalations in automated flows.
 
 ### Downside
+
 It's a more sophisticated stack than is traditional and it consumes a significant amount more compute.

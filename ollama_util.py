@@ -1,11 +1,13 @@
-from typing import Tuple, List, Dict
-from enum import Enum
 import os
 import requests
 import json
+from typing import Tuple, List, Dict
+from enum import Enum
 from ollama import embeddings
 from langchain_prompt import get_taxonomy_prompt, get_parse_prompt, Example
 from product_def import products
+from trail import log
+from datetime import datetime
 
 
 class OllamaModel(Enum):
@@ -24,24 +26,13 @@ ollama_host = "http://localhost:11434"
 def generate_ollama_embedding(text: str,
                               model: str,
                               host: str) -> List[float]:
-    """
-    Generates an embedding for the given text using Ollama.
-
-    Args:
-        text (str): The text to embed.
-        model (str): The Ollama model to use.
-        host (str): The Ollama server address.
-
-    Returns:
-        list: The embedding vector, or None if an error occurs.
-    """
     try:
         if os.environ.get("OLLAMA_HOST") != host:
             os.environ["OLLAMA_HOST"] = host
         response = embeddings(model=model, prompt=text)
         return response['embedding']
     except Exception as e:
-        print(f"Ollama - Error generating embedding: {e}")
+        log().debug(f"Ollama - Error generating embedding: {e}")
         return None
 
 
@@ -53,12 +44,12 @@ def ollama_running_and_model_loaded(host: str,
         models = [m["name"] for m in response.json()["models"]]
         loaded_ok = model_name in models
         if loaded_ok:
-            print(f"Ollama - model is loaded OK [{model_name}]")
+            log().debug(f"Ollama - model is loaded OK [{model_name}]")
         else:
-            print(f"Ollama - model is not loaded [{model_name}]")
+            log().debug(f"Ollama - model is not loaded [{model_name}]")
         return loaded_ok
     except requests.exceptions.RequestException as e:
-        print(
+        log().debug(
             f"Ollama - An error occurred, getting model [{model_name}] status: {e}")
         return False
 
@@ -86,19 +77,17 @@ def clean_json_str(jason_str: str) -> str:
 def get_ollama_response(prompt: str,
                         model: str,
                         host: str,
-                        temperature=0.2) -> Tuple[bool, str]:
-    """
-       Low temperature as we are making a factual interpretation, but need it to be non zero
-       as we are parsing hand written text that needs some degree of flexibility.
-    """
+                        temperature: float) -> Tuple[bool, str]:
     try:
+        start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log().debug(f"Model request starts: {start_time}")
+
         ollama_host = os.environ.get('OLLAMA_HOST', host)
         url = f"{ollama_host}/api/chat"
         headers = {'Content-Type': 'application/json'}
         payload = {
             'model': model,
             'messages': [{'role': 'user', 'content': prompt}],
-            # Important to disable streaming for this simple example.
             'stream': False,
             'options': {'temperature': temperature}
         }
@@ -109,6 +98,11 @@ def get_ollama_response(prompt: str,
 
         data = response.json()
         json_str = clean_json_str(data['message']['content'])
+
+        end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log().debug(f"Model request ends: {end_time}")
+        log().debug(f"Model request duration: {(datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S') - datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')).seconds // 60} mins and {(datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S') - datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')).seconds % 60} seconds")
+
         return (True, json.loads(json_str))
 
     except requests.exceptions.RequestException as e:
@@ -123,25 +117,25 @@ def get_ollama_response(prompt: str,
 
 def get_product_taxonomy(ref_request: str,
                          model: str,
-                         host: str
-                         ) -> Tuple[bool, Dict]:
+                         host: str,
+                         temperature) -> Tuple[bool, Dict]:
     """
         Use currently loaded Ollama LLM to review the given RFQ and return what product type the RFQ is talking about
     """
     prompt = get_taxonomy_prompt(product_list=products, rfq=ref_request)
-    res, reply = get_ollama_response(prompt, model=model, host=host)
+    res, reply = get_ollama_response(prompt, model=model, host=host, temperature=temperature)
     return res, reply
 
 
 def save_prompt(prompt: str,
                 test_id: str) -> None:
     try:
-        prompt_filename = f"prompt-{test_id}.txt"
+        prompt_filename = f"./data/prompt-{test_id}.txt"
         with open(prompt_filename, 'w') as file:
             file.write(prompt)
-        print(f"RfqRag - Fully qualified Prompt saved to: {prompt_filename}")
+        log().debug(f"Fully qualified Prompt saved to: {prompt_filename}")
     except Exception as e:
-        print(f"RfqRag - Failed to save prompt: {e} exiting test [{test_id}]")
+        log().debug(f"Failed to save prompt: {e} exiting test [{test_id}]")
         exit(1)
     return
 
@@ -155,12 +149,22 @@ def get_parsed_rfq(ref_request: str,
                    ex5: Example,
                    test_id: str,
                    model: str,
-                   host: str
+                   host: str,
+                   temperature
                    ) -> Tuple[bool, Dict]:
     """
         Use currently loaded Ollama LLM to review the given RFQ and parse out all pricing parameters
     """
-    prompt = get_parse_prompt(ref_request, product, ex1, ex2, ex3, ex4, ex5)
+    prompt = get_parse_prompt(rfq=ref_request,
+                              product=product,
+                              ex1=ex1,
+                              ex2=ex2,
+                              ex3=ex3,
+                              ex4=ex4,
+                              ex5=ex5)
     save_prompt(prompt, test_id)
-    res, reply = get_ollama_response(prompt, model=model, host=host)
+    res, reply = get_ollama_response(prompt=prompt,
+                                     model=model,
+                                     host=host,
+                                     temperature=temperature)
     return res, reply

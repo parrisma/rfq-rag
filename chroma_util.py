@@ -6,6 +6,7 @@ import requests
 import time
 from chromadb.config import Settings
 import chromadb
+from trail import log
 
 # Chroma settings
 #
@@ -27,9 +28,9 @@ def chroma_bootstrap_and_deepclean(chroma_host: str,
 
     collections = persistent_client.list_collections()
     if remove_all:
-        print("Chroma - Clean up existing chroma collections:")
+        log().debug("Chroma - Clean up existing chroma collections:")
         for col in collections:
-            print(f"Chroma - Deleting old collection: {col}")
+            log().debug(f"Chroma - Deleting old collection: {col}")
             persistent_client.delete_collection(col)
 
     new_collection = False
@@ -41,25 +42,25 @@ def chroma_bootstrap_and_deepclean(chroma_host: str,
                 sorted_cols.append([col, col.metadata.get("created_at", 0)])
             sorted_cols = sorted(sorted_cols, key=lambda c: c[1])
             collection = sorted_cols[-1][0]
-            print(f"Chroma - Using last collection: {collection.name}")
+            log().debug(f"Chroma - Using last collection: {collection.name}")
         elif use_collection in collections:
             collection_name = use_collection
             collection = persistent_client.get_collection(collection_name)
-            print(f"Chroma - Using existing collection: {collection.name}")
+            log().debug(f"Chroma - Using existing collection: {collection.name}")
         else:
             new_collection = True
             collection_name = f"rfq_rag_collection_{uuid.uuid4()}"
             collection = persistent_client.create_collection(collection_name, metadata={"created_at": time.time()})
-            print(f"Chroma - creating new collection: {collection.name}")
+            log().debug(f"Chroma - creating new collection: {collection.name}")
     except Exception as e:
-        print(f"Chroma - Error creating or getting collections: {e}")
+        log().debug(f"Chroma - Error creating or getting collections: {e}")
         raise
 
     collections = persistent_client.list_collections()
     if collection.name in collections:
-        print(f"Chroma - New collection created & visible in Chroma: {collection.name}")
+        log().debug(f"Chroma - New collection created & visible in Chroma: {collection.name}")
     else:
-        print(f"Chroma - Error creating new collection: {collection.name}")
+        log().debug(f"Chroma - Error creating new collection: {collection.name}")
         collection = None
         new_collection = False
 
@@ -73,10 +74,10 @@ def test_chroma_connection(host: str,
         response = requests.get(url)
         response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
         heartbeat_data = response.json()
-        print(f"Chroma - connection successful. Heartbeat: {heartbeat_data}")
+        log().debug(f"Chroma - connection successful. Heartbeat: {heartbeat_data}")
         return True
     except requests.exceptions.RequestException as e:
-        print(f"Chroma - connection failed: {e}")
+        log().debug(f"Chroma - connection failed: {e}")
         return False
 
 
@@ -107,6 +108,6 @@ def get_similar_rfqs(rfq_to_match: str,
 
 def clean_up_collection(persistent_client: chromadb.PersistentClient,
                         collection: chromadb.Collection) -> None:
-    print("\n############ D E L E T E  C O L L E C T I O N #########")
+    log().debug("\n############ D E L E T E  C O L L E C T I O N #########")
     persistent_client.delete_collection(name=collection.name)
-    print(f"RfqRag - Collection {collection.name} deleted")
+    log().debug(f"Collection {collection.name} deleted")
