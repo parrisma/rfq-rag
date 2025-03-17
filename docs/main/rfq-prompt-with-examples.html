@@ -50,7 +50,7 @@
                         font-size: 11pt;
                         font-family: "Arial";
                         font-style: normal
-                }
+                }                
 
                 .c5 {
                         color: #6d9eeb;
@@ -61,6 +61,16 @@
                         font-family: "Arial";
                         font-style: normal
                 }
+
+                .c6 {
+                        color: #28fc03;
+                        font-weight: 400;
+                        text-decoration: none;
+                        vertical-align: baseline;
+                        font-size: 11pt;
+                        font-family: "Arial";
+                        font-style: normal
+                } 
 
                 .title {
                         padding-top: 0pt;
@@ -191,7 +201,7 @@
                         <p style="color: fff2cc;font-size: 12pt">
                                 This is an example of a full qualified large language model prompt that follows the RAG
                                 pattern as we
-                                have injected specific examples that we ask the LLM to use a a source of truth to
+                                have injected specific examples that we ask the LLM to use as a source of truth to
                                 override or augment
                                 the general knowledge it accumulated as part of its training.
                         </p><br>
@@ -200,35 +210,38 @@
                                 Anatomy of a Prompt
                         </p><br>
                         <p style="color: fff2cc;">
-                                1. <a href="#rules" style="color: fff2cc;">Absolute Rules</a><br>
+                                1. <a href="#parse" style="color: fff2cc;">Primary Parse Request</a><br>
                         </p>
                         <p style="color: fff2cc;">
-                                1. <a href="#uex" style="color: fff2cc;">Use of Examples</a><br>
+                                2. <a href="#rules" style="color: fff2cc;">Absolute Rules</a><br>
                         </p>
                         <p style="color: fff2cc;">
-                                2. <a href="#confidence" style="color: fff2cc;">Confidence score</a><br>
+                                3. <a href="#uex" style="color: fff2cc;">Use of Examples</a><br>
                         </p>
                         <p style="color: fff2cc;">
-                                3. <a href="#explanation" style="color: fff2cc;">Explanation</a><br>
+                                4. <a href="#confidence" style="color: fff2cc;">Confidence score</a><br>
                         </p>
                         <p style="color: fff2cc;">
-                                3. <a href="#advice" style="color: fff2cc;">Advice</a><br>
+                                5. <a href="#explanation" style="color: fff2cc;">Explanation</a><br>
                         </p>
                         <p style="color: fff2cc;">
-                                4. <a href="#examples" style="color: fff2cc;">Embedded Example RFQs</a><br>
+                                6. <a href="#advice" style="color: fff2cc;">Advice</a><br>
                         </p>
                         <p style="color: fff2cc;">
-                                5. <a href="#input" style="color: fff2cc;">RFQ Text Being Parsed</a><br>
+                                7. <a href="#examples" style="color: fff2cc;">Embedded Example RFQs</a><br>
                         </p>
                         <p style="color: fff2cc;">
-                                6. <a href="#json" style="color: fff2cc;">The JSON output definition</a><br>
+                                8. <a href="#input" style="color: fff2cc;">RFQ Text Being Parsed</a><br>
+                        </p>
+                        <p style="color: fff2cc;">
+                                9. <a href="#json" style="color: fff2cc;">The JSON output definition</a><br>
                         </p>
                         <br>
                         <hr>
                         <br>
                 </span>
         </p>
-        <p class="c0"><span class="c1">Extract all possible quoting parameters from the given structured equity
+        <p class="c0"><span class="c6" id="parse">Extract all possible quoting parameters from the given structured equity
                         derivatives equity linked note, client supplied, request for quote (RFQ)</span></p>
         <p class="c0 c2"><span class="c1"></span></p>
         <p class="c0"><span class="c1" id="rules"">**Absolute Rules**</span></p>
