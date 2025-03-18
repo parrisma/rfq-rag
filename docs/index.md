@@ -1,6 +1,6 @@
 # Automating Tedious Manual Finance Tasks with LLMs
 
-Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code
+Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code.
 
 ## NOTES
 

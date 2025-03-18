@@ -1,6 +1,6 @@
 # Overview
 
-Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code
+Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) & full code.
 
 ## NOTES
 
