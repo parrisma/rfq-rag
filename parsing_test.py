@@ -23,8 +23,8 @@ def run_parsing_test(similarity_test: bool,
     log().debug(f"Running [{num_tests}] test cycles")
     for test_cycle in range(num_tests):
         test_id = str(uuid.uuid4())
-        log().debug("\n----------------------------------------------------------------\n")
-        log().debug(f"\nRfqRag - Generate random RFQ request for test cycle: [{test_cycle}] with test id: [{test_id}]")
+        log().debug("----------------------------------------------------------------")
+        log().debug(f"RfqRag - Generate random RFQ request for test cycle: [{test_cycle}] with test id: [{test_id}]")
         test_rfq = generate_random_rfq()
 
         log().debug(f"Test RFQ [{test_rfq['request']}]")
@@ -40,12 +40,14 @@ def run_parsing_test(similarity_test: bool,
                 log().debug(f"Confidence: {reply['confidence']:.2f}")
                 log().debug(f"Explanation: {reply['explanation']}")
                 log().debug(f"Advice: {reply['advice']}")
+            else:
+                log().debug(f"Product type: {reply['product']}")
 
             similar = get_similar_rfqs(test_rfq["request"],
                                        reply['product'],
                                        embedding_generator,
                                        collection)
-            log().debug(f"\nRfqRag - List of similar RFQ's with distances measure to augment the prompt")
+            log().debug(f"RfqRag - List of similar RFQ's with distances measure to augment the prompt")
             for d, r, _, _ in similar:
                 log().debug(f"Dist: [{float(d):7.2f}], Doc: {r}")
         else:
