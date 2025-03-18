@@ -9,18 +9,23 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 
 ## Contents
 
-1. [Automation Challenge](#historical-challenge)
-    1. [LLMs gaps for automation tasks](#llms-gaps-for-automation-tasks)
-    1. [The LLM Model Temperature Paradox](#the-llm-model-temperature-paradox)
-    1. [Retrieval Augmented Generation (RAG)](#retrieval-augmented-generation-rag)
-    1. [Commodity Process](#commodity-process)
-    1. [Intuition](#intuition)
-    1. [Demo: Parsing Requests for Quotes](#demo-parsing-requests-for-quotes)
-1. [Conclusion](#conclusion)
-1. [Core Concepts](#core-concepts)
-1. [Technology](#technology)
-1. [WorkFlow](#workflow)
-1. [Example LLM Prompt](./main/rfq-prompt-with-examples.html) _test it on your favourite WEB LLM_
+* Overview
+    1. [Automation Challenge](#historical-challenge)
+        1. [LLMs gaps for automation tasks](#llms-gaps-for-automation-tasks)
+        1. [The LLM Model Temperature Paradox](#the-llm-model-temperature-paradox)
+        1. [Retrieval Augmented Generation (RAG)](#retrieval-augmented-generation-rag)
+        1. [Commodity Process](#commodity-process)
+        1. [Intuition](#intuition)
+        1. [Demo: Parsing Requests for Quotes](#demo-parsing-requests-for-quotes)
+    1. [Conclusion](#conclusion)
+    1. [Core Concepts](#core-concepts)
+    1. [Technology](#technology)
+    1. [WorkFlow](#workflow)
+* [Example LLM Prompt](./main/rfq-prompt-with-examples.html) _test it on your favourite WEB LLM_
+* [Approach](./main)
+* [Deployment](./deployment)
+* [Demo Examples](./demo)
+* [Concepts](./concept.md)
 
 ## Historical Challenge
 
