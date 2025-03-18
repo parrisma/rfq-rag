@@ -4,16 +4,16 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 
 ## NOTES
 
-* **All** data, names, products etc in the demo are **totally fictional** and designed & invented **just for illustration**.
-* The financial products are only partially defined, with sufficient just to prove they can be differentiated.
+* **All** data, names, and products in the demo are fictional and for illustration only.
+* The financial products are partially defined, just enough to show differentiation.
 
 ## Table of Contents
 
-* [Design Overview](#application-of-rag)
-* [Problem Statement](#problem-statement)
-* [Application of RAG](#application-of-rag)
-* [Full Prompt with examples](./rfq-prompt-with-examples.html)
-* [Demo Operation](#creating-example-rfqs)
+1. [Design Overview](#application-of-rag)
+1. [Problem Statement](#problem-statement)
+1. [Application of RAG](#application-of-rag)
+1. [Full Prompt with examples](./rfq-prompt-with-examples.html)
+1. [Demo Operation](#creating-example-rfqs)
     1. [Creating Example RFQs](#creating-example-rfqs)
     1. [Retrieve Relevant Examples](#retrieve-relevant-examples)
     1. [The full Flow](#the-full-flow)
@@ -24,7 +24,7 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 
 **Objective:**
 
-* Automate RFQ pricing detail extraction for seamless client quoting.
+* Automate RFQ pricing detail extraction for seamless client quoting experience.
 
 **Key Results:**
 
@@ -219,20 +219,3 @@ The LLM generated advice, trust extract or ask for clarification
 ```text
 Dear François Martin, thank you for your request. Could you please clarify if the 18-year term is correct and intended for this ELN? Additionally, could you confirm the barrier level of 60% and how it applies to the structure? This will help ensure we provide an accurate quote. Best regards.
 ```
-
----
-
-## Summary
-
-### Upside
-
-With a few commodity tools it is now possible to build workflows that can
-
-* Extract specialist details reliably
-* Process colloquial and multilingual text
-* Explain the reasoning behind the process
-* Self assess confidence levels to manage risk and escalations in automated flows.
-
-### Downside
-
-It's a more sophisticated stack than is traditional and it consumes a significant amount more compute.

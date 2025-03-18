@@ -9,7 +9,7 @@
 
 Manual processing of written financial workflows is inefficient, error-prone, and costly. Automation has been attempted for decades but often fails due to its rigidity and inability to adapt to changes in written processes. This limitation can now be addressed using Large Language Models (LLMs).
 
-### Challenges with LLMs
+### LLMs gaps for automation tasks
 
 LLMs bring automation potential but face key challenges:
 
@@ -31,7 +31,7 @@ It's now quick and cost-effective to deploy RAG solutions using readily availabl
 
 ### Intuition
 
-Getting the **intuition** for RAG into the hands of those performing manual tasks allows their perspective to shape its application, improving services and cutting costs.
+Getting the **intuition** for RAG into the hands of those performing manual tasks allows their perspective to shape its application, uncover more opportunities, and improve client services, thus cutting costs.
 
 ### Demo: Parsing Requests for Quotes
 
@@ -45,7 +45,7 @@ The demo solution handles RFQs in English, French, and Spanish, including colloq
 
 This demonstrates how RAG connects complex language to automated, regulated finance workflows.
 
-**Dive deeper into the project on our [GitHub Pages](https://parrisma.github.io/rfq-rag/) to see how this is all possible!**
+**Dive deeper into the project on our [GitHub Pages](https://parrisma.github.io/rfq-rag/) to see how this is works!**
 
 ### Conclusion
 
@@ -53,11 +53,11 @@ RAG has been around for a while but still has significant untapped applications 
 
 However its not a free lunch
 
-- Much can be automated but it does not 100% eliminate human oversight
-- Commodity tooling, but requires specialists to build and operate
-- Models have bias, so on-going evaluation and selection is needed
+- Much can be automated but it does not 100% eliminate human oversight.
+- Commodity tooling, but requires specialists to build and operate.
+- Models have bias, so on-going evaluation and selection is needed.
 - Vector databases contain much sensitive data needing appropriate security.
-- Compute costs will be a factor at scale as running LLM's is expensive
-- Regulatory approval would be an issue with customer facing applications
+- Compute costs could be a factor at scale as running LLM's is compute intensive.
+- Regulatory approval would be an issue with customer facing applications.
 - Augmentation examples must be kept current as a data driven process.
 - Determinism is not guaranteed, so error detection must be designed in.
