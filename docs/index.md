@@ -10,8 +10,8 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 ## Contents
 
 * Overview
-    1. [Automation Challenge](#historical-challenge)
-        1. [LLMs gaps for automation tasks](#llms-gaps-for-automation-tasks)
+    1. [Automation Challenge](#elusive-automation)
+        1. [LLMs gaps for automation tasks](#applied-llms)
         1. [The LLM Model Temperature Paradox](#the-llm-model-temperature-paradox)
         1. [Retrieval Augmented Generation (RAG)](#retrieval-augmented-generation-rag)
         1. [Commodity Process](#commodity-process)
@@ -22,39 +22,55 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
     1. [Technology](#technology)
     1. [WorkFlow](#workflow)
 * [Example LLM Prompt](./main/rfq-prompt-with-examples.html) _test it on your favourite WEB LLM_
-* [Approach](./main)
+* [Design & Approach](./main)
 * [Deployment](./deployment)
 * [Demo Examples](./demo)
 * [Concepts](./concept.md)
 * [Example Run](./main/run.html)
 
-## Historical Challenge
+## Elusive Automation
 
-Manual processing of written financial workflows is inefficient, error-prone, and costly. Automation has been attempted for decades but often fails due to its rigidity and inability to adapt to changes in written processes. This limitation can now be addressed using Large Language Models (LLMs).
+It's no news that the manual processing aspects of financial workflows are inefficient, error-prone, and costly. However, when written comprehension is required, automation often fails due to its rigidity and inability to adapt even to simple changes. So here, we show with a demo project (see below), how LLMs can be applied to address this long tail of manual processes that persists even after decades of automation.
 
-### LLMs gaps for automation tasks
+### Applied LLMs
 
 LLMs bring automation potential but face key challenges:
 
-1. **Missing Specifics**: LLMs lack real-time or company-specific knowledge essential for accurate financial tasks.
-1. **Non-Determinism**: Responses can vary, causing inconsistent automation, a.k.a. Model temperature (see [The LLM Model Temperature Paradox](#the-llm-model-temperature-paradox))
-1. **Explainability**: Finance requires clear explanations for audits and compliance, which historical automation has not been able to supply.
+1. **Missing Specifics**: LLMs have vast general knowledge but lack real-time or company-specific knowledge essential for accurate financial task automation.
+1. **Non-Determinism**: LLM generative creativity can cause responses to vary, resulting in inconsistent automation inputs, the LLM model temperature paradox, see below.
+1. **Explainability**: Finance requires clear explanations for audits and compliance, which historical automation has not been able to supply, but at which LLMs excel.
 
 ### The LLM Model Temperature Paradox
 
-Imagine asking 100 journalists to summarize a breaking news story for traders. You want them to use their expertise but also provide consistent summaries. If they write creatively, the summaries will vary wildly; if they think and write too rigidly, salient details may be missed. This is akin to an LLM's "temperature setting": high temperature promotes creativity but inconsistent results; low temperature ensures consistency but risks overlooking key details. So, in any LLM automation solution, striking the right balance is essential for reliable automation.
+Imagine asking 100 journalists to summarize a breaking news story. You ask them to use their expertise but also provide consistent summaries. If they write too creatively, the summaries will vary wildly. If they think and write too rigidly, salient details may be missed.
+
+This is akin to an LLM's temperature setting: a high temperature setting promotes creativity but inconsistent results; a low temperature setting ensures consistency but reduces understanding and could miss key details. So, in any LLM automation, finding the right temperature setting is essential for reliable automation.
 
 ### Retrieval Augmented Generation (RAG)
 
-RAG enables LLMs to understand written requests better. It incorporates proprietary and **specialized knowledge** into AI workflows, addresses **explainability**, and—with the right model temperature—can produce **deterministic** results for onward automation.
+RAG enables LLMs to better understand written requests. It can incorporate proprietary and **specialized knowledge** into [LLM Prompts](./main/rfq-prompt-with-examples.html), addresses **explainability** by detailing its reasoning and with the right model temperature, can produce **deterministic** results for automation.
 
 ### Commodity Process
 
-It's now quick and cost-effective to deploy RAG solutions using readily available LLMs, private model hosting (even on PCs with GPUs !), and open-source or enterprise vector databases.
+It's now quick and cost-effective to build and deploy RAG solutions using readily available LLMs, private model hosting (even on PCs with GPUs!), and open-source or enterprise vector databases and other support tooling.
 
 ### Intuition
 
-Getting the **intuition** for RAG into the hands of those performing manual tasks allows their perspective to shape its application, uncover more opportunities, and improve client services, thus cutting costs.
+Getting this **intuition** for RAG into the hands of those performing manual tasks it key, it allows their unique perspectives to shape its application, uncover opportunities, improve client services, and cut costs.
+
+## Conclusion
+
+RAG has been around for a while but still has significant untapped applications in automating residual or enduring manual comprehension processes. We can tap this potential if we increase the intuition for the solution among those who are performing these manual tasks.
+
+However, it's not a free lunch:
+
+* Much can be automated, but it does not 100% eliminate human oversight.
+* Models and tooling are almost commodity, but specialists are required to use them.
+* Compute costs could be a factor at scale, as running LLMs is very compute-intensive.
+* Determinism is not guaranteed, so error detection must be designed in.
+* Regulatory approval is an issue with customer-facing applications. (less so for internal ones)
+* Models evolve quickly, so ongoing evaluation and selection are needed.
+* Examples must be kept current as RAG is only as good as its augmentation data.
 
 ### Demo: Parsing Requests for Quotes
 
@@ -66,33 +82,18 @@ The demo solution handles RFQs in English, French, and Spanish, including colloq
 * **Determinism**: Produces reliable JSON outputs for automation.
 * **Explainability**: Clearly explains reasoning and assumptions.
 
-This demonstrates how RAG connects complex language to automated, regulated finance workflows.
+We see RAG reliably processing complex language to automate a finance workflow.
 
 **Dive deeper into the project on our [GitHub Pages](https://parrisma.github.io/rfq-rag/) to see how this is works!**
-
-## Conclusion
-
-RAG has been around for a while but still has significant untapped applications in automating residual or enduring manual comprehension process.
-
-However its not a free lunch
-
-* Much can be automated but it does not 100% eliminate human oversight.
-* Commodity tooling, but requires specialists to build and operate.
-* Models have bias, so on-going evaluation and selection is needed.
-* Vector databases contain much sensitive data needing appropriate security.
-* Compute costs could be a factor at scale as running LLM's is compute intensive.
-* Regulatory approval would be an issue with customer facing applications.
-* Augmentation examples must be kept current as a data driven process.
-* Determinism is not guaranteed, so error detection must be designed in.
 
 ## Core Concepts
 
 1. **Understanding**
-    * Large language models [understand](./main/rfq-prompt-with-examples.html#rules) the meaning of text, not just the words. This lets them interpret requests like 'extract pricing terms' even if there are abbreviations, shortcuts, or mistakes. And they can work across languages, like in our demo with Spanish, French, and English.
+    * LLMs grasp meaning, not just words, enabling interpretation of varied requests (e.g., "extract pricing terms") across spoken languages, product types and colloquial variations.
 1. **Augmentation**
-    * LLMs convert text into a kind of 'meaning code' called embeddings. This allows them to see when texts are similar. We use this to store correctly interpreted past RFQs in a special database (vector database), where the 'meaning code' is the key. So when we ask the LMM to interpret a new RFQ, the system finds similar past RFQs and their correct interpretations and adds them to the prompt. This helps the LLM give a more accurate answer, as it can use validated and very specific knowledge
+    * LLMs use "meaning codes" (embeddings) to find semantically similar past examples in a database. These examples are added to prompts, improving accuracy with specific and validated knowledge.
 1. **Explainability**
-    * When AI makes decisions, we need to be able to explain how it arrived at those decisions or assumptions. If something goes wrong, we must be able to show why the AI made a certain choice. With the demo, the LLM explains its reasoning in plain language and provides a confidence score. If the score is low, the automation is interrupted to seek more clarification, this makes the process more reliable and transparent.
+    * LLMs explain their reasoning and provide confidence scores, where low scores trigger human review, ensuring transparency and reliability.
 
 ## Technology
 
