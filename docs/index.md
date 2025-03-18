@@ -26,6 +26,7 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 * [Deployment](./deployment)
 * [Demo Examples](./demo)
 * [Concepts](./concept.md)
+* [Example Run](./main/run.html)
 
 ## Historical Challenge
 

@@ -8,6 +8,7 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 - [Generate RFQs' Only](#generate-rfqs-only)
 - [Test getting similar RFQ only](#test-getting-similar-rfq-only)
 - [Test full RFQ parsing](#test-full-rfq-parsing)
+- [Example of full parsing run](../main/run.html)
 
 ---
 
