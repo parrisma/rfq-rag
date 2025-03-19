@@ -10,23 +10,13 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 ## Contents
 
 * Overview
-    1. [Automation Challenge](#elusive-automation)
-        1. [LLMs gaps for automation tasks](#applied-llms)
-        1. [The LLM Model Temperature Paradox](#the-llm-model-temperature-paradox)
-        1. [Retrieval Augmented Generation (RAG)](#retrieval-augmented-generation-rag)
-        1. [Commodity Process](#commodity-process)
-        1. [Intuition](#intuition)
-        1. [Demo: Parsing Requests for Quotes](#demo-parsing-requests-for-quotes)
-    1. [Conclusion](#conclusion)
-    1. [Core Concepts](#core-concepts)
-    1. [Technology](#technology)
-    1. [WorkFlow](#workflow)
-* [Example LLM Prompt](./main/rfq-prompt-with-examples.html) _test it on your favourite WEB LLM_
-* [Design & Approach](./main)
-* [Deployment](./deployment)
-* [Demo Examples](./demo)
-* [Concepts](./concept.md)
-* [Example Run](./main/run.html)
+  * [Overview](#elusive-automation)
+  * [Design & Approach](./main)
+  * [Example LLM Prompt](./main/rfq-prompt-with-examples.html) _test it on your favourite WEB LLM_
+  * [Example Demo Run](./main/run.html)
+  * [Deployment](./deployment)
+  * [Demo Examples](./demo)
+  * [Concepts](./concept.md)
 
 ## Elusive Automation
 
