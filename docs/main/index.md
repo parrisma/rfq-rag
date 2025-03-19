@@ -13,6 +13,7 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 1. [Problem Statement](#problem-statement)
 1. [Application of RAG](#application-of-rag)
 1. [Full Prompt with examples](./rfq-prompt-with-examples.html)
+1. [Request & Response example](./example-request-response.html)
 1. [Demo Operation](#creating-example-rfqs)
     1. [Creating Example RFQs](#creating-example-rfqs)
     1. [Retrieve Relevant Examples](#retrieve-relevant-examples)
