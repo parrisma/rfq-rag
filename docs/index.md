@@ -9,14 +9,13 @@ Click here for [Demo project repository](https://github.com/parrisma/rfq-rag/) &
 
 ## Contents
 
-* Overview
-  * [Overview](#elusive-automation)
-  * [Design & Approach](./main)
-  * [Example LLM Prompt](./main/rfq-prompt-with-examples.html) _test it on your favourite WEB LLM_
-  * [Example Demo Run](./main/run.html)
-  * [Deployment](./deployment)
-  * [Demo Examples](./demo)
-  * [Concepts](./concept.md)
+* [Overview](#elusive-automation)
+* [Design & Approach](./main)
+* [Example LLM Prompt](./main/rfq-prompt-with-examples.html) _test it on your favourite WEB LLM_
+* [Example Demo Run](./main/run.html)
+* [Deployment](./deployment)
+* [Demo Examples](./demo)
+* [Concepts](./concept.md)
 
 ## Elusive Automation
 
